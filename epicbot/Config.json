@@ -1,0 +1,8 @@
+{
+  "botToken": "NTYyMzc4MjI1NzU0MzA4NjMz.XKKb7w.g_3gDPQNcwVYIaQmY1QODVFrKbU",
+  "commandPrefix": "!",
+  "opedRole": "mod",
+  "muteRole": "muted",
+  "nsfwRole": "nsfw",
+  "logChannelName": "log"
+}
