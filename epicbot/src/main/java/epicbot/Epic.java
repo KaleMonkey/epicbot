@@ -2,6 +2,7 @@ package epicbot;
 
 import javax.security.auth.login.LoginException;
 
+import epicbot.util.Listener;
 import epicbot.util.Settings;
 import epicbot.util.SettingsManager;
 import net.dv8tion.jda.core.AccountType;

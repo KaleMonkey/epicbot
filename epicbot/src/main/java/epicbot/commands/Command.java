@@ -1,5 +1,14 @@
 package epicbot.commands;
 
+import epicbot.commands.general.About;
+import epicbot.commands.general.Help;
+import epicbot.commands.general.NSFW;
+import epicbot.commands.general.Ping;
+import epicbot.commands.general.Servers;
+import epicbot.commands.moderation.Ban;
+import epicbot.commands.moderation.Kick;
+import epicbot.commands.moderation.Mute;
+import epicbot.commands.moderation.Unmute;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -12,7 +21,10 @@ public interface Command
 			new Unmute(),
 			new About(),
 			new NSFW(),
-			new Servers()};
+			new Servers(),
+			new Ping(),
+			new Ban(),
+			new Kick()};
 	
 	/**
 	 * Returns the name of the command.
@@ -39,7 +51,7 @@ public interface Command
 	boolean GuildOnly();
 	
 	/**
-	 * Checks to see if the message contains the necessary arguments for the command.
+	 * Attempts to execute the command.
 	 * @param event the event containing the message
 	 */
 	void execute(MessageReceivedEvent event);
