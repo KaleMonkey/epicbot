@@ -69,7 +69,7 @@ public class Help implements Command
 				// Starts building an embedded message.
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				eb.setDescription("Try `>help <Command>` to get specific usage instructions for a command!");
+				eb.setDescription("Try `" + Epic.settings.getCommandPrefix() + "help <Command>` to get specific usage instructions for a command!");
 				// Adds all the command names to a string.
 				String temp = "";
 				for (Command command : Command.COMMANDS)
