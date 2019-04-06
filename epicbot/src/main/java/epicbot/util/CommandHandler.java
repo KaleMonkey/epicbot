@@ -95,12 +95,15 @@ public class CommandHandler
 	public static Command checkCommands(String command)
 	{
 		// Checks if the provided string matches any of the known commands.
-		for (int i = 0; i < Command.COMMANDS.length; i++)
+		for (Command[] ct : Command.COMMANDS)
 		{
-			if (command.equalsIgnoreCase(Command.COMMANDS[i].getName()))
+			for (Command c : ct)
 			{
-				// If the string matches a command the command object will be returned.
-				return Command.COMMANDS[i];
+				if (c.getName().equalsIgnoreCase(command))
+				{
+					// If the string matches a command the command object will be returned.
+					return c;
+				}
 			}
 		}
 		// If the string does not match any of the commands null will be returned.

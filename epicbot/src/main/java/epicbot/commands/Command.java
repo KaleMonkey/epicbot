@@ -16,15 +16,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  */
 public interface Command
 {
-	public static final Command[] COMMANDS = {new Help(),
-			new Mute(),
-			new Unmute(),
-			new About(),
-			new NSFW(),
-			new Servers(),
-			new Ping(),
-			new Ban(),
-			new Kick()};
+	public static final Command[] MOD_COMMANDS = {new Mute(), new Unmute(), new Ban(), new Kick()};
+	public static final Command[] GENERAL_COMMANDS = {new About(), new Help(), new Ping(), new NSFW(), new Servers()};
+	public static final Command[][] COMMANDS = {GENERAL_COMMANDS, MOD_COMMANDS};
 	
 	/**
 	 * Returns the name of the command.

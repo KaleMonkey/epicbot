@@ -70,15 +70,22 @@ public class Help implements Command
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 				eb.setDescription("Try `" + Epic.settings.getCommandPrefix() + "help <Command>` to get specific usage instructions for a command!");
+				
 				// Adds all the command names to a string.
-				String temp = "";
-				for (Command command : Command.COMMANDS)
+				String gen = "";
+				String mod = "";
+				for (Command command : Command.GENERAL_COMMANDS)
 				{
-					temp += command.getName() + "\n";
+					gen += command.getName() + "\n";
+				}
+				for (Command command : Command.MOD_COMMANDS)
+				{
+					mod += command.getName() + "\n";
 				}
 				
 				// Puts all the command names into a field.
-				eb.addField("Commands", temp, true);
+				eb.addField("General", gen, true);
+				eb.addField("Moderation", mod, true);
 				
 				// Opens a private channel with the user and sends the embedded message.
 				event.getAuthor().openPrivateChannel().queue((channel) ->
