@@ -1,10 +1,11 @@
-package epicbot.commands;
+package epicbot.commands.moderation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
 import epicbot.util.AutoMod;
+import epicbot.util.CommandHandler;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -59,7 +60,7 @@ public class Unmute implements Command
 	}
 	
 	/**
-	 * Checks to see if the message contains the necessary arguments for the command.
+	 * Attempts to execute the command.
 	 * @param event the event containing the message
 	 */
 	public void execute(MessageReceivedEvent event)
@@ -75,9 +76,9 @@ public class Unmute implements Command
 			}
 			
 			// Gets the arguments for the command.
-			List<Object> arguments = getArguments(event);
+			Member memberToUnmute = getMemberToUnmute(event);
 			
-			if (!isMuted(event.getGuild(), ((Member)arguments.get(0)).getRoles()))
+			if (!isMuted(event.getGuild(), memberToUnmute.getRoles()))
 			{
 				// If the user is not muted the automated response will be sent.
 				event.getChannel().sendMessage("The user provided is not muted!").queue();
@@ -85,22 +86,22 @@ public class Unmute implements Command
 			}
 			
 			// Unmutes the user.
-			event.getGuild().getController().removeRolesFromMember((Member)arguments.get(0), CommandHandler.getMuteRole(event.getGuild())).queue();
+			event.getGuild().getController().removeRolesFromMember(memberToUnmute, CommandHandler.getMuteRole(event.getGuild())).queue();
 			
 			// Sends message confirming that the unmute worked.
-			event.getChannel().sendMessage("Unmuted " + ((Member)arguments.get(0)).getEffectiveName() + ".").queue();
+			event.getChannel().sendMessage("Unmuted " + memberToUnmute.getEffectiveName() + ".").queue();
 			
 			// If the user getting muted is not a bot they will be sent a message telling them they got unmuted.
-			if (!(((Member)(arguments.get(0))).getUser().isBot()))
+			if (!(memberToUnmute.getUser().isBot()))
 			{
-				((Member)arguments.get(0)).getUser().openPrivateChannel().queue((channel) ->
+				memberToUnmute.getUser().openPrivateChannel().queue((channel) ->
 				{
 					channel.sendMessage("You have been unmuted because a mod took mercy on you.").queue();
 				});
 			}
 			
 			// Logs the unmute.
-			AutoMod.logUnmute(event, arguments);
+			AutoMod.logUnmute(event, memberToUnmute);
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -116,38 +117,32 @@ public class Unmute implements Command
 	}
 	
 	/**
-	 * Checks to see if the message contains the necessary arguments for the command.
-	 * @param event the event containing the message
+	 * Returns the member to unmute from the message received event.
+	 * @param event the message received event
+	 * @return the member to unmute
+	 * @throws IllegalArgumentException
 	 */
-	private static List<Object> getArguments(MessageReceivedEvent event) throws IllegalArgumentException
+	private static Member getMemberToUnmute(MessageReceivedEvent event) throws IllegalArgumentException
 	{
-		// Creates the variables to store the possible arguments for this command.
-		Member user = null;
+		// Creates a member variable and gives it a default value of null.
+		Member member = null;
 		
-		if (event.getMessage().getContentRaw().substring(1).split(" ").length <= 1)
+		// Checks if the message mentions a member.
+		List<Member> mentionedMembers = event.getMessage().getMentionedMembers(event.getGuild());
+		if (mentionedMembers.size() == 1)
+		{
+			member = mentionedMembers.get(0);
+		}
+		
+		// If member is still at it's default value an exception will be thrown.
+		if (member == null)
 		{
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
-		
-		// Gets the first argument.
+		else
 		{
-			List<Member> mentioned = event.getMessage().getMentionedMembers(event.getGuild());
-			if (mentioned.size() > 0)
-			{
-				user = mentioned.get(0);
-			}
+			return member;
 		}
-		
-		// If any of the required arguments are still at their default value an exception will be thrown.
-		if (user == null)
-		{
-			throw new IllegalArgumentException("Argument Invalid!");
-		}
-		
-		// Creates a list of the arguments and returns it.
-		List<Object> arguments = new ArrayList<Object>();
-		arguments.add(user);
-		return arguments;
 	}
 	
 	/**

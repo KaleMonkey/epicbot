@@ -1,8 +1,10 @@
-package epicbot.commands;
+package epicbot.commands.general;
 
 import java.util.List;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
+import epicbot.util.CommandHandler;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -55,7 +57,7 @@ public class NSFW implements Command
 	}
 	
 	/**
-	 * Checks to see if the message contains the necessary arguments for the command.
+	 * Attempts to execute the command.
 	 * @param event the event containing the message
 	 */
 	public void execute(MessageReceivedEvent event)

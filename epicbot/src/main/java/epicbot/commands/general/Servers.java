@@ -1,8 +1,9 @@
-package epicbot.commands;
+package epicbot.commands.general;
 
 import java.net.Socket;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 

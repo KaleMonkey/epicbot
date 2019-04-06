@@ -1,12 +1,13 @@
-package epicbot.commands;
+package epicbot.commands.moderation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
 import epicbot.util.AutoMod;
+import epicbot.util.CommandHandler;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -21,8 +22,8 @@ public class Mute implements Command
 	private static final String commandName = "Mute";
 	private static final String commandDescription = "Mutes the specified user for a given amount of time. If the given time is 0," +
 			" the mute will last forever or until the user gets unmuted. You must have an OPed role to use this command.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "mute <User> <Time>`\nUser must be an @" +
-			" (example: @Epic Gamer Bot#6375).\nTime must be a whole number greater than 0.";
+	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "mute <User> <Time> <Reason>`\nUser must be an @" +
+			" (example: @Epic Gamer Bot#6375).\nTime must be a whole number greater than 0.\nReason is not required, but is recomended.";
 	private static final boolean commandGuildOnly = true;
 	
 	/**
@@ -78,17 +79,19 @@ public class Mute implements Command
 			}
 			
 			// Gets the arguments for the command.
-			List<Object> arguments = getArguments(event);
+			Member memberToMute = getMemberToMute(event);
+			int muteTime = getMuteTime(event);
+			String muteReason = getMuteReason(event);
 			
 			// Checks if the user getting muted has an OPed role.
-			if (CommandHandler.checkPerms(event.getGuild(), ((Member)arguments.get(0)).getRoles()))
+			if (CommandHandler.checkPerms(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user has an OPed role an automated message will be sent.
 				event.getChannel().sendMessage("Now, now. You mods play nice.").queue();
 				return;
 			}
 			
-			if (isMuted(event.getGuild(), ((Member)arguments.get(0)).getRoles()))
+			if (isMuted(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user is already muted the automated message will be sent.
 				event.getChannel().sendMessage("Relax man. This person is already muted!").queue();
@@ -96,43 +99,42 @@ public class Mute implements Command
 			}
 			
 			// Mutes the user.
-			event.getGuild().getController().addRolesToMember((Member)arguments.get(0), CommandHandler.getMuteRole(event.getGuild())).queue();
-			if (((int)arguments.get(1)) > 0)
+			event.getGuild().getController().addRolesToMember(memberToMute, CommandHandler.getMuteRole(event.getGuild())).queue();
+			if (muteTime > 0)
 			{
 				// Sends message confirming that the mute worked.
-				event.getChannel().sendMessage("Muted " + ((Member)arguments.get(0)).getEffectiveName() + " for " + ((int)arguments.get(1) + " minutes.")).queue();
+				event.getChannel().sendMessage("Muted " + memberToMute.getEffectiveName() + " for " + muteTime + " minutes.").queue();
 				
 				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
-				if (!(((Member)(arguments.get(0))).getUser().isBot()))
+				if (!(memberToMute.getUser().isBot()))
 				{
-					((Member)arguments.get(0)).getUser().openPrivateChannel().queue((channel) ->
+					memberToMute.getUser().openPrivateChannel().queue((channel) ->
 					{
-						channel.sendMessage("You have been muted for " + ((int)arguments.get(1)) + " minutes because \"" +
-							((String)arguments.get(2)) + "\".").queue();
+						channel.sendMessage("You have been muted for " + muteTime + " minutes because \"" + muteReason + "\".").queue();
 					});
 				}
 				
 				// Sets up a timer to unmute the user after the given time.
-				scheduleUnmute((Member)(arguments.get(0)), (int)(arguments.get(1)));
+				scheduleUnmute(memberToMute, muteTime);
 				
 			}
 			else
 			{
 				// Sends message confirming that the mute worked.
-				event.getChannel().sendMessage("Muted " + ((Member)arguments.get(0)).getEffectiveName() + ".").queue();
+				event.getChannel().sendMessage("Muted " + memberToMute.getEffectiveName() + ".").queue();
 				
 				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
-				if (!(((Member)(arguments.get(0))).getUser().isBot()))
+				if (!(memberToMute.getUser().isBot()))
 				{
-					((Member)arguments.get(0)).getUser().openPrivateChannel().queue((channel) ->
+					memberToMute.getUser().openPrivateChannel().queue((channel) ->
 					{
-						channel.sendMessage("You have been muted because \"" + ((String)(arguments.get(2)) + "\".")).queue();
+						channel.sendMessage("You have been muted because \"" + muteReason + "\".").queue();
 					});
 				}
 			}
 			
 			// Logs the mute.
-			AutoMod.logMute(event, arguments);
+			AutoMod.logMute(event, memberToMute, muteTime, muteReason);
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -148,78 +150,95 @@ public class Mute implements Command
 	}
 	
 	/**
-	 * Checks to see if the message contains the necessary arguments for the command.
-	 * @param event the event containing the message
+	 * Returns the member to mute from a message received event.
+	 * @param event the message received event
+	 * @return the member to mute
+	 * @throws IllegalArgumentException
 	 */
-	private static List<Object> getArguments(MessageReceivedEvent event) throws IllegalArgumentException
+	private static Member getMemberToMute(MessageReceivedEvent event) throws IllegalArgumentException
 	{
-		// Creates the variables to store the possible arguments for this command.
-		Member user = null;
-		int time = -1;
-		String reason = "*No reason provided.*";
+		// Creates a member variable and gives it a default value of null.
+		Member member = null;
 		
-		// Creates an array of the message, split up by spaces, starting from the first argument.
-		String[] message;
-		if (event.getMessage().getContentRaw().substring(1).split(" ").length > 1)
+		// Checks if the message mentions a member.
+		List<Member> mentionedMembers = event.getMessage().getMentionedMembers(event.getGuild());
+		if (mentionedMembers.size() == 1)
 		{
-			message = event.getMessage().getContentRaw().substring(6).split(" ");
+			// If there is a mentioned member, member will become that member.
+			member = mentionedMembers.get(0);
+		}
+		
+		// If member is still at it's default value an exception will be thrown.
+		if (member == null)
+		{
+			throw new IllegalArgumentException("Argument Invalid!");
 		}
 		else
 		{
-			throw new IllegalArgumentException("Argument Invalid!");
+			return member;
 		}
+	}
+	
+	/**
+	 * Returns the mute time from a message received event
+	 * @param event the message received event
+	 * @return the mute time
+	 * @throws IllegalArgumentException
+	 */
+	private static int getMuteTime(MessageReceivedEvent event) throws IllegalArgumentException
+	{
+		// Creates a time variable and gives it a default value of -1.
+		int time = -1;
 		
-		// Gets the first argument.
+		// Checks if the message has an integer in the place for time.
+		if (event.getMessage().getContentRaw().split(" ").length >= 3)
 		{
-			List<Member> mentioned = event.getMessage().getMentionedMembers(event.getGuild());
-			if (mentioned.size() > 0)
+			if (isInt(event.getMessage().getContentRaw().split(" ")[2]))
 			{
-				user = mentioned.get(0);
-			}
-		}
-		
-		// Gets the second argument.
-		{
-			if (message.length > 1)
-			{
-				if (isInt(message[1]))
+				int num = Integer.parseInt(event.getMessage().getContentRaw().split(" ")[2]);
+				if (num >= 0)
 				{
-					int num = Integer.parseInt(message[1]);
-					if (num >= 0)
-					{
-						time = num;
-					}
+					// If there is an integer in the place of time, time will become that number.
+					time = num;
 				}
 			}
 		}
 		
-		
-		// Gets the third argument.
-		{
-			if (message.length > 2)
-			{
-				
-				reason = "";
-				for (int i = 2; i < message.length; i++)
-				{
-					reason += (" " + message[i]);
-				}
-				reason = reason.substring(1);
-			}
-		}
-		
-		// If any of the required arguments are still at their default value an exception will be thrown.
-		if (user == null || time == -1)
+		// If time is still at it's default value an exception will be thrown.
+		if (time == -1)
 		{
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
+		else
+		{
+			return time;
+		}
+	}
+	
+	/**
+	 * Returns the mute reason from a message received event.
+	 * @param event the message received event
+	 * @return the reason for the mute
+	 */
+	private static String getMuteReason(MessageReceivedEvent event)
+	{
+		// Creates a reason variable and gives it a default value of "No reason provided".
+		String reason = "*No reason provided*";
 		
-		// Creates a list of the arguments and returns it.
-		List<Object> arguments = new ArrayList<Object>();
-		arguments.add(user);
-		arguments.add(time);
-		arguments.add(reason);
-		return arguments;
+		// Checks if the message has a reason.
+		String[] message = event.getMessage().getContentRaw().split(" ");
+		if (message.length >= 4)
+		{
+			reason = "";
+			for (int i = 3; i < message.length; i++)
+			{
+				reason += (" " + message[i]);
+			}
+			// If there is a reason provided, reason will equal it.
+			reason = reason.substring(1);
+		}
+		
+		return reason;
 	}
 	
 	/**

@@ -1,8 +1,9 @@
-package epicbot.commands;
+package epicbot.util;
 
 import java.util.List;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;

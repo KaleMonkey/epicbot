@@ -1,0 +1,13 @@
+CHANGE LOG
+	epicbot-0.0.1-SNAPSHOT
+		-Initial release.
+
+	epicbot-0.0.2-SNAPSHOT
+		-Added moderation logging.
+		-//Added ban and kick commands.
+		-Added "Reason" argument to the mute command.
+		-Fixed the Github link on the about command.
+		-Disabled the "This isn't a known command" response because of feedback.
+		-Added welcome/leave messages for users.
+		-Added current build and libraries sections to about command.
+		-Added ping command.

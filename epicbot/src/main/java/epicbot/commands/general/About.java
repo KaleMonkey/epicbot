@@ -1,6 +1,9 @@
-package epicbot.commands;
+package epicbot.commands.general;
+
+import java.io.File;
 
 import epicbot.Epic;
+import epicbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -52,6 +55,10 @@ public class About implements Command
 		return commandGuildOnly;
 	}
 	
+	/**
+	 * Attempts to execute the command.
+	 * @param event the event containing the message
+	 */
 	public void execute(MessageReceivedEvent event)
 	{
 		// Since this command doesn't have any arguments we will just check that "about" is the only thing sent in the message.
@@ -62,9 +69,10 @@ public class About implements Command
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 				eb.setDescription("The Epic bot is a discord bot created for the Epic Gamers discord server. It is currently in development and is prone to bugs. If you find any bugs report them to Kale!");
-				eb.setThumbnail("https://imgur.com/Gtpv509");
 				eb.addField("Author", "Kale", true);
 				eb.addField("GitHub", "https://github.com/KaleMonkey/epicbot", true);
+				eb.addField("Libraries", "JDA - https://github.com/DV8FromTheWorld/JDA\nGSON - https://github.com/google/gson", true);
+				eb.addField("Current Build", new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName(), false);
 				MessageEmbed m = eb.build();
 				event.getChannel().sendMessage(m).queue();
 			}
@@ -75,5 +83,4 @@ public class About implements Command
 			}
 		}
 	}
-	
 }
