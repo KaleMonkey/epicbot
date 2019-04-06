@@ -11,3 +11,6 @@ CHANGE LOG
 		-Added welcome/leave messages for users.
 		-Added current build and libraries sections to about command.
 		-Added ping command.
+	epicbot-0.0.3-SNAPSHOT
+		-Changed the wording in help command from "Try >help <Command>" to the config's prefix.
+		-Removed ".jar" from the current build section of the about command.
