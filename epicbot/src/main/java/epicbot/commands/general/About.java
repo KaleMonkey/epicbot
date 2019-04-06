@@ -72,7 +72,8 @@ public class About implements Command
 				eb.addField("Author", "Kale", true);
 				eb.addField("GitHub", "https://github.com/KaleMonkey/epicbot", true);
 				eb.addField("Libraries", "JDA - https://github.com/DV8FromTheWorld/JDA\nGSON - https://github.com/google/gson", true);
-				eb.addField("Current Build", new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName(), false);
+				File currentBuild = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+				eb.addField("Current Build", currentBuild.getName().substring(0, currentBuild.getName().length() - 4), false);
 				MessageEmbed m = eb.build();
 				event.getChannel().sendMessage(m).queue();
 			}
