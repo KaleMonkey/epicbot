@@ -34,15 +34,9 @@ public class CommandHandler
 			return r.get(0);
 		}
 		// If the role does not exist in the server it will be made.
-		List<Permission> perms = new ArrayList<Permission>();
-		perms.add(Permission.BAN_MEMBERS);
-		perms.add(Permission.KICK_MEMBERS);
-		perms.add(Permission.MESSAGE_MENTION_EVERYONE);
-		perms.add(Permission.MESSAGE_MANAGE);
-		perms.add(Permission.VIEW_AUDIT_LOGS);
-		perms.add(Permission.VOICE_DEAF_OTHERS);
-		perms.add(Permission.VOICE_MOVE_OTHERS);
-		perms.add(Permission.VOICE_MUTE_OTHERS);
+		List<Permission> perms = new ArrayList<Permission>(Arrays.asList(Permission.BAN_MEMBERS, Permission.KICK_MEMBERS,
+					Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_MANAGE, Permission.VIEW_AUDIT_LOGS,
+					Permission.VOICE_DEAF_OTHERS, Permission.VOICE_MOVE_OTHERS, Permission.VOICE_MUTE_OTHERS));
 		g.getController().createRole().setName(Epic.settings.getOpedRole()).setColor(new Color(52, 152, 219)).setMentionable(true).setHoisted(true).setPermissions(perms).queue();
 		// Because it takes a hot second for JDA to create the role we must wait.
 		while (r.size() < 1)
