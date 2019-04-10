@@ -1,9 +1,13 @@
 package epicbot.util;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import epicbot.Epic;
 import epicbot.commands.Command;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
@@ -16,74 +20,127 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class CommandHandler
 {	
 	/**
-	 * Returns the mute role for the bot.
-	 * @param g the guild that the event happened in
+	 * Returns the oped role for the given server.
+	 * @param g the guild to get the role from
+	 * @return the oped role
+	 */
+	public static Role getOpedRole(Guild g)
+	{
+		List<Role> r = g.getRolesByName(Epic.settings.getOpedRole(), true);
+		// Checks if the server has a oped role with the same name as the one provided in the config.json.
+		if (r.size() > 0)
+		{
+			// If the role does exist in the server it will be returned.
+			return r.get(0);
+		}
+		// If the role does not exist in the server it will be made.
+		List<Permission> perms = new ArrayList<Permission>();
+		perms.add(Permission.BAN_MEMBERS);
+		perms.add(Permission.KICK_MEMBERS);
+		perms.add(Permission.MESSAGE_MENTION_EVERYONE);
+		perms.add(Permission.MESSAGE_MANAGE);
+		perms.add(Permission.VIEW_AUDIT_LOGS);
+		perms.add(Permission.VOICE_DEAF_OTHERS);
+		perms.add(Permission.VOICE_MOVE_OTHERS);
+		perms.add(Permission.VOICE_MUTE_OTHERS);
+		g.getController().createRole().setName(Epic.settings.getOpedRole()).setColor(new Color(52, 152, 219)).setMentionable(true).setHoisted(true).setPermissions(perms).queue();
+		// Because it takes a hot second for JDA to create the role we must wait.
+		while (r.size() < 1)
+		{
+			r = g.getRolesByName(Epic.settings.getOpedRole(), true);
+		}
+		// Once the role is finally created we will return it.
+		return r.get(0);
+	}
+	
+	/**
+	 * Returns the mute role for the given server.
+	 * @param g the guild to get the role from
 	 * @return the mute role
 	 */
 	public static Role getMuteRole(Guild g)
 	{
 		List<Role> r = g.getRolesByName(Epic.settings.getMuteRole(), true);
+		// Checks if the server has a mute role with the same name as the one provided in the config.json.
 		if (r.size() > 0)
 		{
+			// If the role does exist in the server it will be returned.
 			return r.get(0);
 		}
-		return null;
+		// If the role does not exist in the server it will be made.
+		g.getController().createRole().setName(Epic.settings.getMuteRole()).setColor(Color.RED).setMentionable(false).setHoisted(true).setPermissions(new ArrayList<Permission>()).queue();
+		// Because it takes a hot second for JDA to create the role we must wait.
+		while (r.size() < 1)
+		{
+			r = g.getRolesByName(Epic.settings.getMuteRole(), true);
+		}
+		// Once the role is finally created we will return it.
+		return r.get(0);
 	}
 	
 	/**
-	 * Returns the NSFW role for the bot.
-	 * @param g the guild that the event happened in
-	 * @return the NSFW role
+	 * Returns the NSFW role for the given server.
+	 * @param g the guild to get the role from
+	 * @return if the role exists in the server the NSFW role will be returned, if it doesn't null will be returned instead
 	 */
 	public static Role getNsfwRole(Guild g)
 	{
 		List<Role> r = g.getRolesByName(Epic.settings.getNsfwRole(), true);
+		// Checks if the server has a mute role with the same name as the one provided in the config.json.
 		if (r.size() > 0)
 		{
+			// If the role does exist in the server it will be returned.
 			return r.get(0);
 		}
+		// If the role does not exist in the server null will be returned.
 		return null;
 	}
 	
 	/**
-	 * Returns the log channel for the bot.
-	 * @param g the guild that the event happened in
+	 * Returns the log channel for the given server.
+	 * @param g the guild to get the channel from
 	 * @return the log channel
 	 */
 	public static TextChannel getLogChannel(Guild g)
 	{
 		List<TextChannel> c = g.getTextChannelsByName(Epic.settings.getLogChannelName(), true);
+		// Checks if the server has a log channel with the same name as the provided in the config.json.
 		if (c.size() > 0)
 		{
+			// If the channel does exist in the server it will be returned.
 			return c.get(0);
 		}
-		return null;
+		// If the channel does not exist in the server it will be made.
+		List<Permission> opedAllow = new ArrayList<Permission>(Arrays.asList(Permission.MESSAGE_READ));
+		List<Permission> opedDisallow = new ArrayList<Permission>(Arrays.asList(Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE));
+		List<Permission> everyone = new ArrayList<Permission>(Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE, Permission.MESSAGE_READ));
+		g.getController().createTextChannel(Epic.settings.getLogChannelName()).addPermissionOverride(getOpedRole(g), opedAllow, opedDisallow).addPermissionOverride(g.getPublicRole(), new ArrayList<Permission>(), everyone).queue();
+		// Because it takes a hot second for JDA to create the channel we must wait.
+		while (c.size() < 1)
+		{
+			c = g.getTextChannelsByName(Epic.settings.getLogChannelName(), true);
+		}
+		// Once the channel is finally created we will return it.
+		return c.get(0);
 	}
 	
 	/**
 	 * Checks if the provided array list of user roles matches any of the guild roles that are OPed.
-	 * @param g the guild object that the event happened in
+	 * @param g The guild in which we are checking if the user has the role
 	 * @param r an array list of user roles
 	 * @return true if a any of the user roles matches any of the OPed roles in the guild, false if they don't
 	 */
 	public static boolean checkPerms(Guild g, List<Role> r)
 	{	
-		// Gets any of the roles in the guild that is OPed.
-		List<Role> guildRoles = g.getRolesByName(Epic.settings.getOpedRole(), true);
-		
-		// Checks to see if the provided user roles matches any of the OPed roles in the guild.
-		for (Role op : guildRoles)
+		for (Role userRole : r)
 		{
-			for (Role userRole : r)
+			if (userRole.equals(getOpedRole(g)))
 			{
-				if (userRole.equals(op))
-				{
-					// If a user role matches an OPed role, true will be returned.
-					return true;
-				}
+				// If a user role matches the OPed role, true will be returned.
+				return true;
 			}
 		}
-		// If none of the user roles matches any of the OPed roles in the guild, false will be returned.
+		// If none of the user roles matches the OPed role, false will be returned.
 		return false;
 	}
 	
