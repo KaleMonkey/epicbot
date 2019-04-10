@@ -1,5 +1,6 @@
 package epicbot.util;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
@@ -60,8 +61,10 @@ public class AutoMod
 		{
 			t = " indefinatly";
 		}
-		String m = event.getAuthor().getName() + " muted " + memberToMute.getEffectiveName() + t + " because \"" + muteReason + ".\"";
-		CommandHandler.getLogChannel(event.getGuild()).sendMessage(m).queue();
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		eb.addField("Mute", event.getAuthor().getName() + " muted " + memberToMute.getEffectiveName() + t + " because \"" + muteReason + ".\"", false);
+		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -72,8 +75,10 @@ public class AutoMod
 	public static void logUnmute(MessageReceivedEvent event, Member memberToUnmute)
 	{
 		// Logs the unmute with the correct information.
-		CommandHandler.getLogChannel(event.getGuild()).sendMessage(event.getAuthor().getName() + " unmuted " +
-				memberToUnmute.getEffectiveName() + ".").queue();
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		eb.addField("Unmute", event.getAuthor().getName() + " unmuted " + memberToUnmute.getEffectiveName() + ".", false);
+		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -82,8 +87,10 @@ public class AutoMod
 	public static void logKick(MessageReceivedEvent event, Member memberToKick, String kickReason)
 	{
 		// Logs the kick with the correct information.
-		CommandHandler.getLogChannel(event.getGuild()).sendMessage(event.getAuthor().getName() + " kicked " +
-				memberToKick.getEffectiveName() + " because \"" + kickReason + "\".").queue();
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		eb.addField("Kick", event.getAuthor().getName() + " kicked " + memberToKick.getEffectiveName() + " because \"" + kickReason + "\".", false);
+		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -92,8 +99,10 @@ public class AutoMod
 	public static void logBan(MessageReceivedEvent event, Member memberToBan, String banReason)
 	{
 		// Logs the ban with the correct information.
-		CommandHandler.getLogChannel(event.getGuild()).sendMessage(event.getAuthor().getName() + " banned " +
-				memberToBan.getEffectiveName() + " because \"" + banReason + ".\"").queue();
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		eb.addField("Ban", event.getAuthor().getName() + " banned " + memberToBan.getEffectiveName() + " because \"" + banReason + ".\"", false);
+		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -102,7 +111,9 @@ public class AutoMod
 	public static void logUnban(MessageReceivedEvent event, User userToUnban)
 	{
 		// Logs the unban with the correct information.
-		CommandHandler.getLogChannel(event.getGuild()).sendMessage(event.getAuthor().getName() + " unbanned " +
-				userToUnban.getName() + ".").queue();
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		eb.addField("Unban", event.getAuthor().getName() + " unbanned " + userToUnban.getName() + ".", false);
+		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 }
