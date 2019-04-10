@@ -1,5 +1,7 @@
 package epicbot.util;
 
+import java.awt.Color;
+
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
@@ -62,6 +64,7 @@ public class AutoMod
 			t = " indefinatly";
 		}
 		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Mute", event.getAuthor().getName() + " muted " + memberToMute.getEffectiveName() + t + " because \"" + muteReason + ".\"", false);
 		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
@@ -76,6 +79,7 @@ public class AutoMod
 	{
 		// Logs the unmute with the correct information.
 		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.GREEN);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Unmute", event.getAuthor().getName() + " unmuted " + memberToUnmute.getEffectiveName() + ".", false);
 		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
@@ -88,6 +92,7 @@ public class AutoMod
 	{
 		// Logs the kick with the correct information.
 		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Kick", event.getAuthor().getName() + " kicked " + memberToKick.getEffectiveName() + " because \"" + kickReason + "\".", false);
 		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
@@ -100,6 +105,7 @@ public class AutoMod
 	{
 		// Logs the ban with the correct information.
 		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Ban", event.getAuthor().getName() + " banned " + memberToBan.getEffectiveName() + " because \"" + banReason + ".\"", false);
 		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
@@ -112,6 +118,7 @@ public class AutoMod
 	{
 		// Logs the unban with the correct information.
 		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.GREEN);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Unban", event.getAuthor().getName() + " unbanned " + userToUnban.getName() + ".", false);
 		CommandHandler.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
