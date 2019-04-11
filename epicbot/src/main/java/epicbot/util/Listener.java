@@ -25,6 +25,9 @@ public class Listener implements EventListener
 	}
 }
 
+/**
+ * @author Kyle Minter (Kale Monkey)
+ */
 class RunnableThread implements Runnable
 {
 	private Event event;
