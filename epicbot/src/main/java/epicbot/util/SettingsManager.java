@@ -16,7 +16,7 @@ import epicbot.Epic;
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-class SettingsManager
+public class SettingsManager
 {
 	private static SettingsManager instance;
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
