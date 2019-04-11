@@ -1,6 +1,7 @@
 package epicbot.commands;
 
 import epicbot.commands.general.About;
+import epicbot.commands.general.CatFact;
 import epicbot.commands.general.Help;
 import epicbot.commands.general.NSFW;
 import epicbot.commands.general.Ping;
@@ -17,7 +18,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public interface Command
 {
 	public static final Command[] MOD_COMMANDS = {new Mute(), new Unmute(), new Ban(), new Kick()};
-	public static final Command[] GENERAL_COMMANDS = {new About(), new Help(), new Ping(), new NSFW(), new Servers()};
+	public static final Command[] GENERAL_COMMANDS = {new About(), new Help(), new Ping(), new NSFW(), new Servers(), new CatFact()};
 	public static final Command[][] COMMANDS = {GENERAL_COMMANDS, MOD_COMMANDS};
 	
 	/**
