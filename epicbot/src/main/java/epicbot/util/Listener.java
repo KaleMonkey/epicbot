@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
@@ -50,8 +51,18 @@ class RunnableThread implements Runnable
 		if (event instanceof MessageReceivedEvent)
 		{
 			MessageReceivedEvent e = (MessageReceivedEvent)event;
-			// Parses the event.
-			CommandHandler.parseEvent(e);
+			
+			if (e.getMessage().isFromType(ChannelType.TEXT) && e.getMessage().getMentionedUsers().indexOf(event.getJDA().getSelfUser()) != -1)
+			{
+				// If message is from a server and mentions the bot a shit post will be sent in response.
+				String[] shitposts = {"stfu loser", "why tf are you @ing me", "@ me again and ill ban you", "ur mom gey"};
+				e.getChannel().sendMessage(shitposts[(int)(Math.random() * shitposts.length)]).queue();
+			}
+			else
+			{
+				// Parses the event.
+				CommandHandler.parseEvent(e);
+			}
 			// Runs automod on the message.
 		}
 		// Checks if event is a member join event.
