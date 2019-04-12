@@ -6,9 +6,7 @@ import epicbot.Epic;
 import epicbot.commands.Command;
 import epicbot.util.AutoMod;
 import epicbot.util.CommandHandler;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.HierarchyException;
 
@@ -78,7 +76,7 @@ public class Unmute implements Command
 			// Gets the arguments for the command.
 			Member memberToUnmute = getMemberToUnmute(event);
 			
-			if (!isMuted(event.getGuild(), memberToUnmute.getRoles()))
+			if (!MutedMember.isMuted(event.getGuild(), memberToUnmute.getRoles()))
 			{
 				// If the user is not muted the automated response will be sent.
 				event.getChannel().sendMessage("The user provided is not muted!").queue();
@@ -87,6 +85,7 @@ public class Unmute implements Command
 			
 			// Unmutes the user.
 			event.getGuild().getController().removeRolesFromMember(memberToUnmute, CommandHandler.getMuteRole(event.getGuild())).queue();
+			MutedMember.removeMutedMember(new MutedMember(memberToUnmute));
 			
 			// Sends message confirming that the unmute worked.
 			event.getChannel().sendMessage("Unmuted " + memberToUnmute.getEffectiveName() + ".").queue();
@@ -143,29 +142,5 @@ public class Unmute implements Command
 		{
 			return member;
 		}
-	}
-	
-	/**
-	 * Checks to see if the user is muted or not.
-	 * @param g the guild the message was sent in
-	 * @param r the user roles
-	 * @return true if the user is muted, false if they are not
-	 */
-	private boolean isMuted(Guild g, List<Role> r)
-	{
-		// Gets the mute role for the guild.
-		Role mute = CommandHandler.getMuteRole(g);
-		
-		// Checks to see if the provided user roles matches the mute role in the guild.
-		for (Role userRole : r)
-		{
-			if (userRole.equals(mute))
-			{
-				// If a user role matches the mute role, true will be returned.
-				return true;
-			}
-		}
-		// If none of the user roles matches the mute role in the guild, false will be returned.
-		return false;
 	}
 }
