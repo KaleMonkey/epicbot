@@ -21,6 +21,6 @@ CHANGE LOG
 		-If a server does not have a NSFW role it is assumed that it doesn't want to support the feature and an automated message is sent.
 		-If a server does not already have a OPed or mute role matching the one in the config.json one will be made.
 		-Help now sends the list of commands sorted by command type.
-		//-Created tag system and associated commands.
+		-Created tag system and associated commands.
 		-The bot will now respond to messages that are from a server and mention the bot with a random shit post.
 		-Mute timers will now be ended once "unmute" command is called to avoid having unnecessary threads running and having worse performance because of it.
