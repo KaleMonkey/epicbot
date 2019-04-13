@@ -5,6 +5,7 @@ import javax.security.auth.login.LoginException;
 import epicbot.util.Listener;
 import epicbot.util.Settings;
 import epicbot.util.SettingsManager;
+import epicbot.util.Tag;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -48,6 +49,8 @@ public class Epic
 			
 			// Creates SettingsManager and gets the Settings object.
 			settings = SettingsManager.getInstance().getSettings();
+			// Loads "Tags.ser"
+			Tag.loadTags();
 			
 			// Creates the builder so we can setup the bot for start-up.
 			JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());

@@ -74,6 +74,7 @@ public class Help implements Command
 				// Adds all the command names to a string.
 				String gen = "";
 				String mod = "";
+				String tag = "";
 				for (Command command : Command.GENERAL_COMMANDS)
 				{
 					gen += command.getName() + "\n";
@@ -82,10 +83,15 @@ public class Help implements Command
 				{
 					mod += command.getName() + "\n";
 				}
+				for (Command command : Command.TAG_COMMANDS)
+				{
+					tag += command.getName() + "\n";
+				}
 				
 				// Puts all the command names into a field.
 				eb.addField("General", gen, true);
 				eb.addField("Moderation", mod, true);
+				eb.addField("Tag", tag, true);
 				
 				// Opens a private channel with the user and sends the embedded message.
 				event.getAuthor().openPrivateChannel().queue((channel) ->
