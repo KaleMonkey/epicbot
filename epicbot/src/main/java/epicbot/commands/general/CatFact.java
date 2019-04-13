@@ -1,22 +1,16 @@
 package epicbot.commands.general;
 
-import java.io.File;
-
 import epicbot.Epic;
 import epicbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
-/**
- * @author Kyle Minter (Kale Monkey)
- */
-public class About implements Command
+public class CatFact implements Command
 {
-	private static final String commandName = "About";
-	private static final String commandDescription = "Shows info about the bot such as the creator and github page.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "about`";
+	private static final String commandName = "Catfact";
+	private static final String commandDescription = "Sends a random cat fact.";
+	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "catfact`";
 	private static final boolean commandGuildOnly = false;
 	
 	/**
@@ -62,20 +56,24 @@ public class About implements Command
 	public void execute(MessageReceivedEvent event)
 	{
 		// Since this command doesn't have any arguments we will just check that "about" is the only thing sent in the message.
-		if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("about"))
+		if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("catfact"))
 		{
 			try
 			{
+				String[] facts = {"Fact 35: The ancient Egyptians were the first to tame the cat in about 3000 BC.",
+						"Fact 69: Cats share 95.6% of their DNA with tigers.",
+						"Fact 101: Cats are asleep for 70% of their lives.",
+						"Fact 256: A group of cats is called a \"clowder.\"",
+						"Fact 386: The first cat in space was a French cat named Felicette (a.k.a. “Astrocat”) In 1963, France blasted the cat into outer space. Electrodes implanted in her brains sent neurological signals back to Earth. She survived the trip.",
+						"Fact 420: A cat can jump up to five times its own height in a single bound.",
+						"Fact 763: Cat kidneys are super efficient, they can rehydrate by drinking seawater.",
+						"Fact 972: When a cat chases its prey, it keeps its head level. Dogs and humans bob their heads up and down."};
+				
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				eb.setDescription("The Epic bot is a discord bot created for the Epic Gamers discord server. It is currently in development and is prone to bugs. If you find any bugs report them to Kale!");
-				eb.addField("Author", "Kale", true);
-				eb.addField("GitHub", "https://github.com/KaleMonkey/epicbot", true);
-				eb.addField("Libraries", "JDA - https://github.com/DV8FromTheWorld/JDA\nGSON - https://github.com/google/gson", true);
-				File currentBuild = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-				eb.addField("Current Build", currentBuild.getName().substring(0, currentBuild.getName().length() - 4), false);
-				MessageEmbed m = eb.build();
-				event.getChannel().sendMessage(m).queue();
+				eb.setTitle("Cat Fact");
+				eb.setDescription(facts[(int)(Math.random() * facts.length)]);
+				event.getChannel().sendMessage(eb.build()).queue();
 			}
 			catch (InsufficientPermissionException e)
 			{

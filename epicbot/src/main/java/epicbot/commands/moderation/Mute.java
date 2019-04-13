@@ -1,5 +1,6 @@
 package epicbot.commands.moderation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +19,7 @@ import net.dv8tion.jda.core.exceptions.HierarchyException;
  * @author Kyle Minter (Kale Monkey)
  */
 public class Mute implements Command
-{
+{	
 	private static final String commandName = "Mute";
 	private static final String commandDescription = "Mutes the specified user for a given amount of time. If the given time is 0," +
 			" the mute will last forever or until the user gets unmuted. You must have an OPed role to use this command.";
@@ -91,7 +92,7 @@ public class Mute implements Command
 				return;
 			}
 			
-			if (isMuted(event.getGuild(), memberToMute.getRoles()))
+			if (MutedMember.isMuted(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user is already muted the automated message will be sent.
 				event.getChannel().sendMessage("Relax man. This person is already muted!").queue();
@@ -115,7 +116,7 @@ public class Mute implements Command
 				}
 				
 				// Sets up a timer to unmute the user after the given time.
-				scheduleUnmute(memberToMute, muteTime);
+				MutedMember.addMutedMember(new MutedMember(memberToMute, muteTime));
 				
 			}
 			else
@@ -258,6 +259,71 @@ public class Mute implements Command
 			return false;
 		}
 	}
+}
+
+/**
+ * @author Kyle Minter (Kale Monkey)
+ */
+class MutedMember
+{
+	private static List<MutedMember> mutedMembers = new ArrayList<MutedMember>();
+	private Member mutedMember;
+	private Timer timer;
+	
+	/**
+	 * Constructs a MutedUser object with a given member and time to be muted.
+	 * @param member member that is muted
+	 * @param time how long the member will be muted for
+	 */
+	public MutedMember(Member member, int time)
+	{
+		mutedMember = member;
+		timer = new Timer();
+		
+		timer.schedule(new TimerTask()
+		{
+			public void run()
+			{
+				// If the user is still muted they will be unmuted.
+				if (isMuted(mutedMember.getGuild(), mutedMember.getRoles()))
+				{
+					mutedMember.getGuild().getController().removeRolesFromMember(mutedMember, CommandHandler.getMuteRole(mutedMember.getGuild())).queue();
+				}
+			}
+		}, time * 60000);
+	}
+	
+	/**
+	 * Constructs a MutedUser object with a given member.
+	 * @param member member that is muted
+	 */
+	public MutedMember(Member member)
+	{
+		mutedMember = member;
+	}
+	
+	/**
+	 * Adds a MutedMember to a list of MutedMember objects.
+	 * @param newMutedMember the MutedMember to add
+	 */
+	public static void addMutedMember(MutedMember newMutedMember)
+	{
+		mutedMembers.add(newMutedMember);
+	}
+	
+	/**
+	 * Removes a MutedMember from a list of MutedMember objects.
+	 * @param mutedMember the MutedMember to remove
+	 */
+	public static void removeMutedMember(MutedMember mutedMember)
+	{
+		int i = mutedMembers.indexOf(mutedMember);
+		if (i != -1)
+		{
+			mutedMembers.get(mutedMembers.indexOf(mutedMember)).getTimer().cancel();;
+			mutedMembers.remove(i);
+		}
+	}
 	
 	/**
 	 * Checks to see if the user is muted or not.
@@ -265,7 +331,7 @@ public class Mute implements Command
 	 * @param r the user roles
 	 * @return true if the user is muted, false if they are not
 	 */
-	private boolean isMuted(Guild g, List<Role> r)
+	public static boolean isMuted(Guild g, List<Role> r)
 	{
 		// Gets the mute role for the guild.
 		Role mute = CommandHandler.getMuteRole(g);
@@ -284,24 +350,31 @@ public class Mute implements Command
 	}
 	
 	/**
-	 * Unmutes the given user after a given time.
-	 * @param user the member to be unmuted
-	 * @param time the amount of time in minutes to wait before unmuting the user
+	 * Returns the timer of the MutedMember.
+	 * @return the timer
 	 */
-	private void scheduleUnmute(Member user, int time)
+	public Timer getTimer()
 	{
-		// Creates a timer object and gives it a task.
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask()
-			{
-				public void run()
-				{
-					// If the user is still muted they will be unmuted.
-					if (isMuted(user.getGuild(), user.getRoles()))
-					{
-						user.getGuild().getController().removeRolesFromMember(user, CommandHandler.getMuteRole(user.getGuild())).queue();
-					}
-				}
-			}, time * 60000);
+		return timer;
+	}
+	
+	/**
+	 * Returns the member of the MutedMember.
+	 * @return the member
+	 */
+	public Member getMember()
+	{
+		return mutedMember;
+	}
+	
+	/**
+	 * Returns true if the two MutedMember objects have the same member, false if they do not.
+	 * @param other the object to compare to
+	 * @return true if members are equal, false if they don't
+	 */
+	public boolean equals(Object other)
+	{
+		MutedMember o = (MutedMember)other;
+		return mutedMember.equals(o.getMember());
 	}
 }

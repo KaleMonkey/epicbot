@@ -67,6 +67,13 @@ public class NSFW implements Command
 			Member author = event.getMember();
 			Role nsfwRole = CommandHandler.getNsfwRole(event.getGuild());
 			
+			// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
+			if (nsfwRole == null)
+			{
+				// Sends the automated response.
+				event.getChannel().sendMessage("This server doesn't support this command!").queue();
+			}
+			
 			// Checks if the author already has the NSFW role.
 			if (hasRole(author, nsfwRole))
 			{

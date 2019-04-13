@@ -5,7 +5,9 @@ import java.net.Socket;
 import epicbot.Epic;
 import epicbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.requests.restaction.pagination.MessagePaginationAction;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -63,7 +65,9 @@ public class Servers implements Command
 		{
 			if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("servers"))
 			{
-				event.getChannel().sendMessage("This might take a second.").queue();
+				// Notifies the user that this command might take a little while to complete.
+				event.getChannel().sendMessage("This might take a while.").queue();
+				
 				// Creates arrays of server names and the ports they are running on.
 				String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
 				int[] ports = {25565, 25566, 27015};
@@ -85,6 +89,18 @@ public class Servers implements Command
 						eb.addField(servers[i], ":red_circle: Offline", true);
 					}
 				}
+				
+				// Deletes the "This might take a second." message.
+				MessagePaginationAction action = event.getChannel().getIterableHistory();
+				for (Message message : action)
+				{
+					if (message.getContentRaw().equals("This might take a while.") && message.getAuthor().isBot())
+					{
+						event.getChannel().deleteMessageById(message.getIdLong()).queue();
+						break;
+					}
+				}
+				
 				// Sends the generated message.
 				event.getChannel().sendMessage(eb.build()).queue();
 			}

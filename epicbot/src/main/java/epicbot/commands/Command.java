@@ -1,6 +1,7 @@
 package epicbot.commands;
 
 import epicbot.commands.general.About;
+import epicbot.commands.general.CatFact;
 import epicbot.commands.general.Help;
 import epicbot.commands.general.NSFW;
 import epicbot.commands.general.Ping;
@@ -9,6 +10,9 @@ import epicbot.commands.moderation.Ban;
 import epicbot.commands.moderation.Kick;
 import epicbot.commands.moderation.Mute;
 import epicbot.commands.moderation.Unmute;
+import epicbot.commands.tag.CreateTag;
+import epicbot.commands.tag.DeleteTag;
+import epicbot.commands.tag.GetTag;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -16,15 +20,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  */
 public interface Command
 {
-	public static final Command[] COMMANDS = {new Help(),
-			new Mute(),
-			new Unmute(),
-			new About(),
-			new NSFW(),
-			new Servers(),
-			new Ping(),
-			new Ban(),
-			new Kick()};
+	public static final Command[] GENERAL_COMMANDS = {new About(), new Help(), new Ping(), new NSFW(), new Servers(), new CatFact()};
+	public static final Command[] MOD_COMMANDS = {new Mute(), new Unmute(), new Kick(), new Ban()};
+	public static final Command[] TAG_COMMANDS = {new CreateTag(), new DeleteTag(), new GetTag()};
+	public static final Command[][] COMMANDS = {GENERAL_COMMANDS, MOD_COMMANDS, TAG_COMMANDS};
 	
 	/**
 	 * Returns the name of the command.
