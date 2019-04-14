@@ -1,58 +1,25 @@
 package epicbot.commands.tag;
 
-import epicbot.Epic;
-import epicbot.commands.Command;
-import epicbot.util.Tag;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 
-public class GetTag implements Command
+import epicbot.Epic;
+import epicbot.entities.Tag;
+import net.dv8tion.jda.core.Permission;
+
+public class GetTag extends Command
 {
-	private static final String commandName = "Tag";
-	private static final String commandDescription = "Sends the content of the specified tag.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "tag <Name>`\nName must be the name of an existing tag.";
-	private static final boolean commandGuildOnly = false;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public GetTag()
 	{
-		return commandName;
+		this.name = "tag";
+		this.help = "Sends the content of the specified tag.";
+		this.arguments = "[name]";
+		this.category = new Category("Tag");
+		this.guildOnly = false;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
-	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
+	public void execute(CommandEvent event)
 	{
 		try
 		{
@@ -60,8 +27,8 @@ public class GetTag implements Command
 			
 			if (message.length > 2 || message.length == 1)
 			{
-				event.getChannel().sendMessage("You provided illegal arguments! Try `" + Epic.settings.getCommandPrefix() +
-						"help tag` to get help with this command.").queue();
+				event.reply("You provided illegal arguments! Try `" + Epic.settings.getCommandPrefix() +
+						"help tag` to get help with this command.");
 			}
 			else
 			{
@@ -69,11 +36,11 @@ public class GetTag implements Command
 				
 				if (tag != null)
 				{
-					event.getChannel().sendMessage(Tag.getTag(tag).getContent()).queue();
+					event.reply(Tag.getTag(tag).getContent());
 				}
 				else
 				{
-					event.getChannel().sendMessage("Tag \"" + message[1] + "\" does not exist!").queue();
+					event.reply("Tag \"" + message[1] + "\" does not exist!");
 				}
 			}
 		}

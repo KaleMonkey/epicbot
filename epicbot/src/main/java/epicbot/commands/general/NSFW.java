@@ -2,105 +2,56 @@ package epicbot.commands.general;
 
 import java.util.List;
 
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+
 import epicbot.Epic;
-import epicbot.commands.Command;
-import epicbot.util.CommandHandler;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.HierarchyException;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class NSFW implements Command
+public class NSFW extends Command
 {
-	private static final String commandName = "NSFW";
-	private static final String commandDescription = "Adds the NSFW role to the user calling the command.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "NSFW`";
-	private static final boolean commandGuildOnly = true;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public NSFW()
 	{
-		return commandName;
+		this.name = "nsfw";
+		this.help = "Adds/removes the server's NSFW role to the user calling the command.";
+		this.category = new Category("General");
+		this.guildOnly = true;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE, Permission.MANAGE_ROLES};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
+	public void execute(CommandEvent event)
 	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
-	{
-		try
+		Member author = event.getMember();
+		Role nsfwRole = Epic.settings.getNsfwRole(event.getGuild());
+		
+		// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
+		if (nsfwRole == null)
 		{
-			Member author = event.getMember();
-			Role nsfwRole = CommandHandler.getNsfwRole(event.getGuild());
-			
-			// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
-			if (nsfwRole == null)
-			{
-				// Sends the automated response.
-				event.getChannel().sendMessage("This server doesn't support this command!").queue();
-			}
-			
-			// Checks if the author already has the NSFW role.
-			if (hasRole(author, nsfwRole))
-			{
-				// If the author already has the NSFW role it will be removed.
-				event.getGuild().getController().removeRolesFromMember(author, nsfwRole).queue();
-				
-				// Sends the response message.
-				event.getChannel().sendMessage(getRandomRemoveResponse()).queue();
-			}
-			else
-			{
-				// If the author doesn't have the NSFW role it will be added.
-				event.getGuild().getController().addRolesToMember(author, nsfwRole).queue();
-				
-				// Sends the response message.
-				event.getChannel().sendMessage(getRandomAddResponse()).queue();
-			}
+			// Sends the automated response.
+			event.reply("This server doesn't support this command!");
 		}
-		catch (HierarchyException e)
+		
+		// Checks if the author already has the NSFW role.
+		if (hasRole(author, nsfwRole))
 		{
-			System.out.println("\n[Error]: The bot role is lower in the role hierarchy than the muted role!");
-			System.out.println("[Error]: Please raise the bot's role in the role hierarchy.\n");
+			// If the author already has the NSFW role it will be removed.
+			event.getGuild().getController().removeRolesFromMember(author, nsfwRole).queue();
+			
+			// Sends the response message.
+			event.reply(getRandomRemoveResponse());
 		}
-		catch (IllegalArgumentException e)
+		else
 		{
-			System.out.println("\n[Error]: There is no NSFW role provided in the config.json!");
-			System.out.println("[Error]: Please edit the config.json if you want this command to work.\n");
+			// If the author doesn't have the NSFW role it will be added.
+			event.getGuild().getController().addRolesToMember(author, nsfwRole).queue();
+			
+			// Sends the response message.
+			event.reply(getRandomAddResponse());
 		}
 	}
 	

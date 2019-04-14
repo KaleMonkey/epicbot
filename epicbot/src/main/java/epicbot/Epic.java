@@ -2,13 +2,29 @@ package epicbot;
 
 import javax.security.auth.login.LoginException;
 
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+
+import epicbot.commands.general.About;
+import epicbot.commands.general.CatFact;
+import epicbot.commands.general.NSFW;
+import epicbot.commands.general.Ping;
+import epicbot.commands.general.Servers;
+import epicbot.commands.moderation.Ban;
+import epicbot.commands.moderation.Kick;
+import epicbot.commands.moderation.Mute;
+import epicbot.commands.moderation.Unmute;
+import epicbot.commands.tag.CreateTag;
+import epicbot.commands.tag.DeleteTag;
+import epicbot.commands.tag.GetTag;
+import epicbot.entities.Tag;
+import epicbot.settings.Settings;
+import epicbot.settings.SettingsManager;
 import epicbot.util.Listener;
-import epicbot.util.Settings;
-import epicbot.util.SettingsManager;
-import epicbot.util.Tag;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -49,21 +65,46 @@ public class Epic
 			
 			// Creates SettingsManager and gets the Settings object.
 			settings = SettingsManager.getInstance().getSettings();
-			// Loads "Tags.ser"
-			Tag.loadTags();
 			
-			// Creates the builder so we can setup the bot for start-up.
+			// Creates the client so we can setup the bot for start-up.
+			EventWaiter waiter = new EventWaiter();
+			CommandClientBuilder client = new CommandClientBuilder()
+					.setOwnerId("162750370450243584")
+					.setPrefix(settings.getCommandPrefix())
+					.setGame(Game.listening(settings.getCommandPrefix() + "help"));
+			
+			// Adds commands.
+			client.addCommands(
+					// General commands.
+					new About(),
+					new Ping(),
+					new NSFW(),
+					new Servers(),
+					new CatFact(),
+					// Moderation commands.
+					new Mute(),
+					new Unmute(),
+					new Kick(),
+					new Ban(),
+					// Tag commands.
+					new CreateTag(),
+					new DeleteTag(),
+					new GetTag());
+			
 			JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());
 			
 			// Adds event listener.
 			Listener eventListener = new Listener();
-			jdaBuilder.addEventListener(eventListener);
+			jdaBuilder.addEventListener(eventListener, client.build(), waiter);
 			
 			// Now that the bot is all setup, it will login.
 			api = jdaBuilder.build();
 			// Blocks until the JDA is completely loaded.
 			api.awaitReady();			
 			System.out.println("\n[Epic]: Finished building JDA!\n");
+			
+			// Loads "Tags.ser"
+			Tag.loadTags();
 		}
 		catch (IllegalArgumentException e)
         {

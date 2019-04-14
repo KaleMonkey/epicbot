@@ -2,113 +2,67 @@ package epicbot.commands.general;
 
 import java.net.Socket;
 
-import epicbot.Epic;
-import epicbot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.requests.restaction.pagination.MessagePaginationAction;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Servers implements Command
+public class Servers extends Command
 {
-	private static final String commandName = "Servers";
-	private static final String commandDescription = "Gets a list of servers provided by Kale and shows if they are running or not";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "servers`";
-	private static final boolean commandGuildOnly = false;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public Servers()
 	{
-		return commandName;
+		this.name = "servers";
+		this.help = "Gets a list of servers provided by Kale and shows if they are running or not.";
+		this.category = new Category("General");
+		this.guildOnly = false;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
+	public void execute(CommandEvent event)
 	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
-	{
-		try
+		event.reply("This might take a while.");
+		
+		// Creates arrays of server names and the ports they are running on.
+		String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
+		int[] ports = {25565, 25566, 27015};
+		
+		// Starts building an embedded message with the server's status.
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+		for (int i = 0; i < servers.length; i++)
 		{
-			if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("servers"))
+			// Checks if the server is listening on the provided port.
+			if (isServerListening("kale.ddns.net", ports[i]))
 			{
-				// Notifies the user that this command might take a little while to complete.
-				event.getChannel().sendMessage("This might take a while.").queue();
-				
-				// Creates arrays of server names and the ports they are running on.
-				String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
-				int[] ports = {25565, 25566, 27015};
-				
-				// Starts building an embedded message with the server's status.
-				EmbedBuilder eb = new EmbedBuilder();
-				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				for (int i = 0; i < servers.length; i++)
-				{
-					// Checks if the server is listening on the provided port.
-					if (isServerListening("kale.ddns.net", ports[i]))
-					{
-						// If it is online a field will be added to the message.
-						eb.addField(servers[i], ":large_blue_circle: Online", true);
-					}
-					else
-					{
-						// If it is offline a field will be added to the message.
-						eb.addField(servers[i], ":red_circle: Offline", true);
-					}
-				}
-				
-				// Deletes the "This might take a second." message.
-				MessagePaginationAction action = event.getChannel().getIterableHistory();
-				for (Message message : action)
-				{
-					if (message.getContentRaw().equals("This might take a while.") && message.getAuthor().isBot())
-					{
-						event.getChannel().deleteMessageById(message.getIdLong()).queue();
-						break;
-					}
-				}
-				
-				// Sends the generated message.
-				event.getChannel().sendMessage(eb.build()).queue();
+				// If it is online a field will be added to the message.
+				eb.addField(servers[i], ":large_blue_circle: Online", true);
+			}
+			else
+			{
+				// If it is offline a field will be added to the message.
+				eb.addField(servers[i], ":red_circle: Offline", true);
 			}
 		}
-		catch (Exception e)
+		
+		// Deletes the "This might take a second." message.
+		MessagePaginationAction action = event.getChannel().getIterableHistory();
+		for (Message message : action)
 		{
-			// Idk, just in case something goes wrong lmfao.
+			if (message.getContentRaw().equals("This might take a while.") && message.getAuthor().isBot())
+			{
+				event.getChannel().deleteMessageById(message.getIdLong()).queue();
+				break;
+			}
 		}
+		
+		// Sends the generated message.
+		event.reply(eb.build());
 	}
 	
 	/**

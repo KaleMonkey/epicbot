@@ -1,68 +1,26 @@
 package epicbot.commands.general;
 
-import epicbot.Epic;
-import epicbot.commands.Command;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+
+import net.dv8tion.jda.core.Permission;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Ping implements Command
+public class Ping extends Command
 {
-	private static final String commandName = "Ping";
-	private static final String commandDescription = "Shows the time, in milliseconds, it takes for the bot to respond.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "ping`";
-	private static final boolean commandGuildOnly = false;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public Ping()
 	{
-		return commandName;
+		this.name = "ping";
+		this.help = "Checks the bot bot\'s latency";
+		this.category = new Category("General");
+		this.guildOnly = false;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
+	public void execute(CommandEvent event)
 	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
-	{
-		try
-		{
-			event.getChannel().sendMessage("Took " + event.getJDA().getPing() + " milliseconds to respond!").queue();
-		}
-		catch (Exception e)
-		{
-			// idk. incase anything goes wrong.
-		}
+		event.reply("Took " + event.getJDA().getPing() + "ms to respond!");
 	}
 }
