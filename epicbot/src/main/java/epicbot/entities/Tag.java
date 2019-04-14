@@ -1,4 +1,4 @@
-package epicbot.util;
+package epicbot.entities;
 
 import java.io.File;
 import java.io.FileInputStream;
