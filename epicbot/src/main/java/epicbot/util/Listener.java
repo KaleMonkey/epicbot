@@ -5,11 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 /**
@@ -47,31 +45,19 @@ class RunnableThread implements Runnable
 	 */
 	public void run()
 	{
-		// Checks if event is a guild message received event.
-		if (event instanceof MessageReceivedEvent)
-		{
-			MessageReceivedEvent e = (MessageReceivedEvent)event;
-			
-			if (e.getMessage().isFromType(ChannelType.TEXT) && e.getMessage().getMentionedUsers().indexOf(event.getJDA().getSelfUser()) != -1)
-			{
-				// If message is from a server and mentions the bot a shit post will be sent in response.
-				String[] shitposts = {"stfu loser", "why tf are you @ing me", "@ me again and ill ban you", "ur mom gey"};
-				e.getChannel().sendMessage(shitposts[(int)(Math.random() * shitposts.length)]).queue();
-			}
-			else
-			{
-				// Parses the event.
-				CommandHandler.parseEvent(e);
-			}
-			// Runs automod on the message.
-		}
-		// Checks if event is a member join event.
-		else if (event instanceof GuildMemberJoinEvent)
+		if (event instanceof GuildMemberJoinEvent)
 		{
 			GuildMemberJoinEvent gmje = (GuildMemberJoinEvent)event;
 			
 			// Sends the welcome message to the user.
-			AutoMod.sendWelcomeMessage(gmje);
+			if (!(gmje.getUser().isBot()))
+			{
+				// Opens a private channel with the user and sends the welcome message.
+				gmje.getUser().openPrivateChannel().queue((channel) ->
+				{
+					channel.sendMessage("Welcome to the " + gmje.getGuild().getName() + " discord server!").queue();
+				});
+			}
 		}
 		// Checks if event is a member leave event.
 		else if (event instanceof GuildMemberLeaveEvent)
@@ -87,7 +73,14 @@ class RunnableThread implements Runnable
 					if (!(ale.getType().equals(ActionType.KICK) || ale.getType().equals(ActionType.BAN)))
 					{
 						// If the member leave event is not cause by a kick then the leave message will be sent.
-						AutoMod.sendLeaveMessage(gmle);
+						if (!(gmle.getUser().isBot()))
+						{
+							// Opens a private channel with the user and sends the leave message.
+							gmle.getUser().openPrivateChannel().queue((channel) ->
+							{
+								channel.sendMessage("Sad to see you leave " + gmle.getGuild().getName() + "!").queue();
+							});
+						}
 					}
 				}
 			}
