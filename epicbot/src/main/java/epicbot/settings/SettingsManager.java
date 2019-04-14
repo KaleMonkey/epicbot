@@ -1,4 +1,4 @@
-package epicbot.util;
+package epicbot.settings;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
