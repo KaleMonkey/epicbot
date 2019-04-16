@@ -22,23 +22,12 @@ public class SettingsManager
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private Settings settings;
 	private final Path configFile = new File(".").toPath().resolve("Config.json");
-	private final Path startFile = new File(".").toPath().resolve("Start.bat");
 	
 	/**
 	 * Creates SettingsManager.
 	 */
 	public SettingsManager() throws IOException
 	{
-		// Checks if Start.bat exists. If it doesn't exist it will be created.
-		if (!startFile.toFile().exists())
-		{
-			System.out.println("\n[Epic]: Creating Start.bat file.");
-			System.out.println("[Epic]: You will need to start the bot by opening the Start.bat file to see the console logs.\n");
-			// Writes the Start.bat file.
-			Files.write(startFile, "cmd /k java -jar bot.jar".getBytes());
-			System.exit(Epic.NEWLY_CREATED_START);
-		}
-		
 		// Checks if Config.json exists. If it doesn't exist it will be created.
 		if (!configFile.toFile().exists())
 		{
@@ -47,6 +36,8 @@ public class SettingsManager
 			// Gets default Config.json and saves it then closes the program.
 			this.settings = getDefaultSettings();
 			saveSettings();
+			System.out.println("Press Enter to terminate...");
+			System.in.read();
 			System.exit(Epic.NEWLY_CREATED_CONFIG);
 		}
 		// Loads the settings from Config.json.
