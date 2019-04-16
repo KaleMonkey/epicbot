@@ -83,7 +83,7 @@ public class Epic
 			// Creates the client so we can setup the bot for start-up.
 			EventWaiter waiter = new EventWaiter();
 			CommandClientBuilder client = new CommandClientBuilder()
-					.setOwnerId("162750370450243584")
+					.setOwnerId(settings.getOwnerID())
 					.setPrefix(settings.getCommandPrefix())
 					.setGame(Game.listening(settings.getCommandPrefix() + "help"));
 			
