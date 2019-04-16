@@ -20,7 +20,7 @@ public class Unmute extends Command
 	public Unmute()
 	{
 		this.name = "unmute";
-		this.help = "Unmutes the specified user. You must have an OPed role to use this command.";
+		this.help = "Unmutes the specified user.";
 		this.arguments = "<@user>";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;

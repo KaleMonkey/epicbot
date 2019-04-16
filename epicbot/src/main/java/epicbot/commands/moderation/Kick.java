@@ -15,7 +15,7 @@ public class Kick extends Command
 	public Kick()
 	{
 		this.name = "kick";
-		this.help = "Kick the specified user. You must have an OPed role to use this command.";
+		this.help = "Kicks the specified user.";
 		this.arguments = "<@user> [reason]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;

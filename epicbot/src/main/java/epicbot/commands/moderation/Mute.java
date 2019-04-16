@@ -21,7 +21,7 @@ public class Mute extends Command
 	{
 		this.name = "mute";
 		this.help = "Mutes the specified user for a given amount of time. If the given time is 0," +
-				" the mute will be indefinite or until the user gets unmuted. You must have an OPed role to use this command.";
+				" the mute will be indefinite or until the user gets unmuted.";
 		this.arguments = "<@user> [time] [reason]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
