@@ -124,6 +124,7 @@ public class SettingsManager
     {
         Settings newSettings = new Settings();
         newSettings.setBotToken("");
+        newSettings.setOwnerID("");
         newSettings.setCommandPrefix("");
         newSettings.setOpedRole("");
         newSettings.setMuteRole("");

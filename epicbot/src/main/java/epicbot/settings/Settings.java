@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 public class Settings
 {
 	private String botToken;
+	private String ownerID;
 	private String commandPrefix;
 	private String opedRole;
 	private String muteRole;
@@ -30,6 +31,16 @@ public class Settings
 	public String getBotToken()
 	{
 		return botToken;
+	}
+	
+	public void setOwnerID(String id)
+	{
+		ownerID = id;
+	}
+	
+	public String getOwnerID()
+	{
+		return ownerID;
 	}
 	
 	public void setCommandPrefix(String prefix)
