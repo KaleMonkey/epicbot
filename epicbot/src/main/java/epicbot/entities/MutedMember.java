@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import epicbot.Epic;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -36,7 +36,7 @@ public class MutedMember
 				// If the user is still muted they will be unmuted.
 				if (isMuted(mutedMember.getGuild(), mutedMember.getRoles()))
 				{
-					mutedMember.getGuild().getController().removeRolesFromMember(mutedMember, Epic.settings.getMuteRole(mutedMember.getGuild())).queue();
+					mutedMember.getGuild().getController().removeRolesFromMember(mutedMember, SettingsManager.getInstance().getSettings().getMuteRole(mutedMember.getGuild())).queue();
 				}
 			}
 		}, time * 60000);
@@ -83,7 +83,7 @@ public class MutedMember
 	public static boolean isMuted(Guild g, List<Role> r)
 	{
 		// Gets the mute role for the guild.
-		Role mute = Epic.settings.getMuteRole(g);
+		Role mute = SettingsManager.getInstance().getSettings().getMuteRole(g);
 		
 		// Checks to see if the provided user roles matches the mute role in the guild.
 		for (Role userRole : r)
