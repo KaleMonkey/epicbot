@@ -66,6 +66,7 @@ public class SettingsManager
 		// Returns the SettingsManager.
 		return instance;
 	}
+	
 	/**
 	 * Reads from Config.json and loads settings.
 	 */
@@ -108,7 +109,6 @@ public class SettingsManager
 	
 	/**
 	 * Returns the settings object.
-	 * 
 	 * @return settings object.
 	 */
 	public Settings getSettings()
@@ -118,7 +118,6 @@ public class SettingsManager
 	
 	/**
 	 * Returns a settings object with the default values for the Config.json file.
-	 * 
 	 * @return settings object.
 	 */
     private Settings getDefaultSettings()

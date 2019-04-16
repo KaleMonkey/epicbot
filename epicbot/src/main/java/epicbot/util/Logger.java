@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 
@@ -34,7 +34,7 @@ public class Logger
 		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Mute", event.getAuthor().getName() + " muted " + memberToMute.getEffectiveName() + t + " because \"" + muteReason + ".\"", false);
-		Epic.settings.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
+		SettingsManager.getInstance().getSettings().getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class Logger
 		eb.setColor(Color.GREEN);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Unmute", event.getAuthor().getName() + " unmuted " + memberToUnmute.getEffectiveName() + ".", false);
-		Epic.settings.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
+		SettingsManager.getInstance().getSettings().getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class Logger
 		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Kick", event.getAuthor().getName() + " kicked " + memberToKick.getEffectiveName() + " because \"" + kickReason + "\".", false);
-		Epic.settings.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
+		SettingsManager.getInstance().getSettings().getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
 	/**
@@ -75,6 +75,6 @@ public class Logger
 		eb.setColor(Color.RED);
 		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
 		eb.addField("Ban", event.getAuthor().getName() + " banned " + memberToBan.getEffectiveName() + " because \"" + banReason + ".\"", false);
-		Epic.settings.getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
+		SettingsManager.getInstance().getSettings().getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 }

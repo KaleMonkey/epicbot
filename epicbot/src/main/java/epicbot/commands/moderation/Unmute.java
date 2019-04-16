@@ -5,8 +5,8 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
 import epicbot.entities.MutedMember;
+import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -24,7 +24,7 @@ public class Unmute extends Command
 		this.arguments = "<@user>";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
-		this.requiredRole = Epic.settings.getOpedRole();
+		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE, Permission.MANAGE_ROLES};
 	}
 	
@@ -43,7 +43,7 @@ public class Unmute extends Command
 			}
 			
 			// Unmutes the user.
-			event.getGuild().getController().removeRolesFromMember(memberToUnmute, Epic.settings.getMuteRole(event.getGuild())).queue();
+			event.getGuild().getController().removeRolesFromMember(memberToUnmute, SettingsManager.getInstance().getSettings().getMuteRole(event.getGuild())).queue();
 			MutedMember.removeMutedMember(new MutedMember(memberToUnmute));
 			
 			// Sends message confirming that the unmute worked.
@@ -65,7 +65,7 @@ public class Unmute extends Command
 		{
 			// If the arguments are invalid the automated message will be sent.
 			event.reply("You provided illegal arguments! Try `" +
-					Epic.settings.getCommandPrefix() + "help unmute` to get help with this command.");
+					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help unmute` to get help with this command.");
 		}
 		catch (HierarchyException e)
 		{

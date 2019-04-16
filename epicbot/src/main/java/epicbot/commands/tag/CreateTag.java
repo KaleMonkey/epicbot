@@ -3,8 +3,8 @@ package epicbot.commands.tag;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
 import epicbot.entities.Tag;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 
 public class CreateTag extends Command
@@ -25,7 +25,7 @@ public class CreateTag extends Command
 		
 		if (message.length < 3)
 		{
-			event.reply("You provided illegal arguments! Try `" + Epic.settings.getCommandPrefix() +
+			event.reply("You provided illegal arguments! Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() +
 					"help createtag` to get help with this command.");
 			return;
 		}

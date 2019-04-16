@@ -5,7 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -27,7 +27,7 @@ public class NSFW extends Command
 	public void execute(CommandEvent event)
 	{
 		Member author = event.getMember();
-		Role nsfwRole = Epic.settings.getNsfwRole(event.getGuild());
+		Role nsfwRole = SettingsManager.getInstance().getSettings().getNsfwRole(event.getGuild());
 		
 		// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
 		if (nsfwRole == null)

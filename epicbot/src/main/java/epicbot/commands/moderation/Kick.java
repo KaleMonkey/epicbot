@@ -5,7 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
+import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -19,7 +19,7 @@ public class Kick extends Command
 		this.arguments = "<@user> [reason]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
-		this.requiredRole = Epic.settings.getOpedRole();
+		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE, Permission.KICK_MEMBERS};
 	}
 	
@@ -32,7 +32,7 @@ public class Kick extends Command
 			String kickReason = getKickReason(event);
 			
 			// Checks if the user getting kicked has an OPed role.
-			if (Epic.settings.checkPerms(event.getGuild(), memberToKick.getRoles()))
+			if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToKick.getRoles()))
 			{
 				// If the user has an OPed role an automated message will be sent.
 				event.reply("Now, now. You mods play nice.");
@@ -68,7 +68,7 @@ public class Kick extends Command
 		{
 			// If the arguments are invalid the automated message will be sent.
 			event.reply("You provided illegal arguments! Try `" +
-				Epic.settings.getCommandPrefix() + "help kick` to get help with this command.");
+					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help kick` to get help with this command.");
 		}
 	}
 	

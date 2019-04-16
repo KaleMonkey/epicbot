@@ -17,6 +17,7 @@ import epicbot.commands.moderation.Mute;
 import epicbot.commands.moderation.Unmute;
 import epicbot.commands.owner.Ping;
 import epicbot.commands.owner.ReloadConfig;
+import epicbot.commands.owner.Restart;
 import epicbot.commands.owner.Shutdown;
 import epicbot.commands.tag.CreateTag;
 import epicbot.commands.tag.DeleteTag;
@@ -45,8 +46,6 @@ public class Epic
 	public static final int NO_USERNAME_PASS_COMBO = 5;
 	
 	private static JDA api;
-	
-	public static Settings settings;
 		
 	/**
 	 * @param args the command line arguments
@@ -59,10 +58,19 @@ public class Epic
 	}
 	
 	/**
+	 * Returns the API.
+	 * @return a JDA instance
+	 */
+	public static JDA getAPI()
+	{
+		return api;
+	}
+	
+	/**
 	 * Sets the bot up.
 	 * @throws IOException 
 	 */
-	public static void setupBot() throws IOException
+	public static void setupBot()
 	{	
 		
 		try
@@ -70,7 +78,7 @@ public class Epic
 			System.out.println("\n[Epic]: Setting up bot.\n");
 			
 			// Creates SettingsManager and gets the Settings object.
-			settings = SettingsManager.getInstance().getSettings();
+			Settings settings = SettingsManager.getInstance().getSettings();
 			
 			// Creates the client so we can setup the bot for start-up.
 			EventWaiter waiter = new EventWaiter();
@@ -100,7 +108,8 @@ public class Epic
 					// Owner commands.
 					new Ping(),
 					new ReloadConfig(),
-					new Shutdown());
+					new Shutdown(),
+					new Restart());
 			
 			JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());
 			
@@ -119,25 +128,44 @@ public class Epic
 		}
 		catch (IllegalArgumentException e)
         {
-            System.out.println("\n[Epic]: No login details provided! Please provide a botToken in the config.\n");
-            System.out.println("Press Enter to terminate...");
-			System.in.read();
-            System.exit(NO_USERNAME_PASS_COMBO);
+            try
+            {
+            	System.out.println("\n[Epic]: No login details provided! Please provide a botToken in the config.\n");
+            	System.out.println("Press Enter to terminate...");
+            	System.in.read();
+            	System.exit(NO_USERNAME_PASS_COMBO);
+            }
+            catch (IOException ioe)
+            {
+            	e.printStackTrace();
+            }
         }
         catch (LoginException e)
         {
-            System.out.println("\n[Epic]: The botToken provided in the Config.json was incorrect.");
-            System.out.println("Did you modify the Config.json after it was created?\n");
-            System.out.println("Press Enter to terminate...");
-			System.in.read();
-            System.exit(BAD_USERNAME_PASS_COMBO);
+            try
+            {	System.out.println("\n[Epic]: The botToken provided in the Config.json was incorrect.");
+            	System.out.println("Did you modify the Config.json after it was created?\n");
+            	System.out.println("Press Enter to terminate...");
+            	System.in.read();
+            	System.exit(BAD_USERNAME_PASS_COMBO);
+            }
+            catch (IOException ioe)
+            {
+            	e.printStackTrace();
+            }
         }
         catch (InterruptedException e)
         {
-            System.out.println("\n[Epic]: The login thread was interrupted!\n");
-            System.out.println("Press Enter to terminate...");
-			System.in.read();
-            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
+            try
+            {	System.out.println("\n[Epic]: The login thread was interrupted!\n");
+            	System.out.println("Press Enter to terminate...");
+            	System.in.read();
+            	System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
+            }
+            catch (IOException ioe)
+            {
+            	e.printStackTrace();
+            }
         }
 	}
 

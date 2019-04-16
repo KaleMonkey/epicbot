@@ -5,8 +5,8 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.Epic;
 import epicbot.entities.MutedMember;
+import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -25,7 +25,7 @@ public class Mute extends Command
 		this.arguments = "<@user> [time] [reason]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
-		this.requiredRole = Epic.settings.getOpedRole();
+		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE, Permission.MANAGE_ROLES};
 	}
 	
@@ -39,7 +39,7 @@ public class Mute extends Command
 			String muteReason = getMuteReason(event);
 			
 			// Checks if the user getting muted has an OPed role.
-			if (Epic.settings.checkPerms(event.getGuild(), memberToMute.getRoles()))
+			if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user has an OPed role an automated message will be sent.
 				event.reply("Now, now. You mods play nice.");
@@ -54,7 +54,7 @@ public class Mute extends Command
 			}
 			
 			// Mutes the user.
-			event.getGuild().getController().addRolesToMember(memberToMute, Epic.settings.getMuteRole(event.getGuild())).queue();
+			event.getGuild().getController().addRolesToMember(memberToMute, SettingsManager.getInstance().getSettings().getMuteRole(event.getGuild())).queue();
 			if (muteTime > 0)
 			{
 				// Sends message confirming that the mute worked.
@@ -95,7 +95,7 @@ public class Mute extends Command
 		{
 			// If the arguments are invalid the automated message will be sent.
 			event.reply("You provided illegal arguments! Try `" +
-					Epic.settings.getCommandPrefix() + "help mute` to get help with this command.");
+					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help mute` to get help with this command.");
 		}
 		catch (HierarchyException e)
 		{
