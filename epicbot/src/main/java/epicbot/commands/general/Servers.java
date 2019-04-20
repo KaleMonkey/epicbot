@@ -1,5 +1,6 @@
 package epicbot.commands.general;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.jagrosh.jdautilities.command.Command;
@@ -7,8 +8,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.requests.restaction.pagination.MessagePaginationAction;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -26,8 +25,6 @@ public class Servers extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		event.reply("This might take a while.");
-		
 		// Creates arrays of server names and the ports they are running on.
 		String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
 		int[] ports = {25565, 25566, 27015};
@@ -50,17 +47,6 @@ public class Servers extends Command
 			}
 		}
 		
-		// Deletes the "This might take a second." message.
-		MessagePaginationAction action = event.getChannel().getIterableHistory();
-		for (Message message : action)
-		{
-			if (message.getContentRaw().equals("This might take a while.") && message.getAuthor().isBot())
-			{
-				event.getChannel().deleteMessageById(message.getIdLong()).queue();
-				break;
-			}
-		}
-		
 		// Sends the generated message.
 		event.reply(eb.build());
 	}
@@ -73,11 +59,11 @@ public class Servers extends Command
 	 */
 	private static boolean isServerListening(String host, int port)
 	{
-		Socket s = null;
+		Socket s = new Socket();
 		
 		try
 		{
-			s = new Socket(host, port);
+			s.connect(new InetSocketAddress(host, port), 3);
 			return true;
 		}
 		catch (Exception e)
