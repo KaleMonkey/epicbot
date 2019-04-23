@@ -3,6 +3,7 @@ package epicbot.util;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import epicbot.Epic;
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
 import net.dv8tion.jda.core.events.Event;
@@ -17,10 +18,8 @@ public class Listener implements EventListener
 {
 	public void onEvent(Event event)
 	{
-		// Creates a new thread to do everything on.
-		RunnableThread rt = new RunnableThread(event);
-		Thread t = new Thread(rt);
-		t.start();
+		// Starts a new thread to do stuff on.
+		Epic.getExecutorService().execute(new RunnableThread(event));
 	}
 }
 

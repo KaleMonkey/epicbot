@@ -1,6 +1,8 @@
 package epicbot;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.security.auth.login.LoginException;
 
@@ -46,6 +48,7 @@ public class Epic
 	public static final int NO_USERNAME_PASS_COMBO = 5;
 	
 	private static JDA api;
+	private static ExecutorService executor;
 		
 	/**
 	 * @param args the command line arguments
@@ -67,6 +70,15 @@ public class Epic
 	}
 	
 	/**
+	 * Returns the executor for the bot.
+	 * @return the ExecutorService
+	 */
+	public static ExecutorService getExecutorService()
+	{
+		return executor;
+	}
+	
+	/**
 	 * Sets the bot up.
 	 * @throws IOException 
 	 */
@@ -80,6 +92,8 @@ public class Epic
 			// Creates SettingsManager and gets the Settings object.
 			Settings settings = SettingsManager.getInstance().getSettings();
 			
+			// Creates the thread pool for the bot.
+			executor = Executors.newCachedThreadPool();
 			// Creates the client so we can setup the bot for start-up.
 			EventWaiter waiter = new EventWaiter();
 			CommandClientBuilder client = new CommandClientBuilder()
