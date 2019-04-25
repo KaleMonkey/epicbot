@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import epicbot.Epic;
+import epicbot.entities.MutedMember;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 /**
@@ -86,6 +91,40 @@ class RunnableThread implements Runnable
 			catch (Exception e)
 			{
 				System.out.println("Exception thown during kick/ban check.");
+			}
+		}
+		// Checks if the event was a role being added to a user in a server.
+		else if (event instanceof GuildMemberRoleAddEvent)
+		{
+			GuildMemberRoleAddEvent gmrae = (GuildMemberRoleAddEvent)event;
+			
+			// Gets the added roles.
+			List<Role> addedRoles = gmrae.getRoles();
+			
+			for (Role role : addedRoles)
+			{
+				// If any of the added roles matches the mute role the member will be added to the MutedMember list.
+				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrae.getGuild())))
+				{
+					MutedMember.addMutedMember(new MutedMember(gmrae.getMember()));
+				}
+			}
+		}
+		// Checks if the event was a role being removed from a user in a server.
+		else if (event instanceof GuildMemberRoleRemoveEvent)
+		{
+			GuildMemberRoleRemoveEvent gmrre = (GuildMemberRoleRemoveEvent)event;
+			
+			// Gets the removed roles.
+			List<Role> removedRoles = gmrre.getRoles();
+			
+			for (Role role : removedRoles)
+			{
+				// If any of the removed roles matches the mute role the member will be removed from the MutedMember list.
+				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrre.getGuild())))
+				{
+					MutedMember.removeMutedMember(new MutedMember(gmrre.getMember()));
+				}
 			}
 		}
 	}
