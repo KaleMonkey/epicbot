@@ -11,28 +11,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import epicbot.Epic;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
 public class Tag implements Serializable
 {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 2;
 	
 	private static ArrayList<Tag> tags = new ArrayList<Tag>();
 	
 	private String name;
 	private String content;
+	private User author;
 	
 	/**
 	 * Constructs a tag object with a given name and content.
 	 * @param n the name of the tag
 	 * @param c the content of the tag
 	 */
-	public Tag (String n, String c)
+	public Tag (String n, String c, User a)
 	{
 		name = n;
 		content = c;
+		author = a;
 	}
 	
 	/**
@@ -45,21 +48,23 @@ public class Tag implements Serializable
 	}
 	
 	/**
+	 * Constructs a tag object with a given name and author.
+	 * @param n n the name of the tag
+	 * @param a the author of the tag
+	 */
+	public Tag (String n, User a)
+	{
+		name = n;
+		author = a;
+	}
+	
+	/**
 	 * Returns the name of the tag.
 	 * @return the name of the tag
 	 */
 	public String getName()
 	{
 		return name;
-	}
-	
-	/**
-	 * Sets the name of the tag.
-	 * @param n the name of the tag
-	 */
-	public void setName(String n)
-	{
-		name = n;
 	}
 	
 	/**
@@ -72,12 +77,12 @@ public class Tag implements Serializable
 	}
 	
 	/**
-	 * Sets the content of the tag.
-	 * @param c the content of the tag
+	 * Returns the author of the tag.
+	 * @return the author of the tag
 	 */
-	public void setContent(String c)
+	public User getAuthor()
 	{
-		content = c;
+		return author;
 	}
 	
 	/**
@@ -86,7 +91,7 @@ public class Tag implements Serializable
 	 */
 	public String toString()
 	{
-		return name + "-" + content;
+		return name + "-" + content + "-" + author.getId();
 	}
 	
 	/**
