@@ -25,30 +25,37 @@ public class Servers extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		// Creates arrays of server names and the ports they are running on.
-		String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
-		int[] ports = {25565, 25566, 27015};
-		
-		// Starts building an embedded message with the server's status.
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-		for (int i = 0; i < servers.length; i++)
+		if (event.getArgs().equals(""))
 		{
-			// Checks if the server is listening on the provided port.
-			if (isServerListening("kale.ddns.net", ports[i]))
+			// Creates arrays of server names and the ports they are running on.
+			String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
+			int[] ports = {25565, 25566, 27015};
+			
+			// Starts building an embedded message with the server's status.
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+			for (int i = 0; i < servers.length; i++)
 			{
-				// If it is online a field will be added to the message.
-				eb.addField(servers[i], ":large_blue_circle: Online", true);
+				// Checks if the server is listening on the provided port.
+				if (isServerListening("kale.ddns.net", ports[i]))
+				{
+					// If it is online a field will be added to the message.
+					eb.addField(servers[i], ":large_blue_circle: Online", true);
+				}
+				else
+				{
+					// If it is offline a field will be added to the message.
+					eb.addField(servers[i], ":red_circle: Offline", true);
+				}
 			}
-			else
-			{
-				// If it is offline a field will be added to the message.
-				eb.addField(servers[i], ":red_circle: Offline", true);
-			}
+			
+			// Sends the generated message.
+			event.reply(eb.build());
 		}
-		
-		// Sends the generated message.
-		event.reply(eb.build());
+		else
+		{
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
+		}
 	}
 	
 	/**

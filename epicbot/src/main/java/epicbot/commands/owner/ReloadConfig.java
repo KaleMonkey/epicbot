@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.Epic;
+import epicbot.commands.general.Help;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 
@@ -23,9 +24,16 @@ public class ReloadConfig extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		event.reply("Reloading config!");
-		SettingsManager.getInstance().loadSettings();
-		Epic.getAPI().shutdownNow();
-		Epic.setupBot();
+		if (event.getArgs().equals(""))
+		{
+			event.reply("Reloading config!");
+			SettingsManager.getInstance().loadSettings();
+			Epic.getAPI().shutdownNow();
+			Epic.setupBot();
+		}
+		else
+		{
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
+		}
 	}
 }

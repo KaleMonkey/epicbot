@@ -3,6 +3,7 @@ package epicbot.commands.owner;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.commands.general.Help;
 import net.dv8tion.jda.core.Permission;
 
 /**
@@ -21,7 +22,14 @@ public class Shutdown extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		event.reply("Shutting down!");
-		System.exit(0);
+		if (event.getArgs().equals(""))
+		{
+			event.reply("Shutting down!");
+			System.exit(0);
+		}
+		else
+		{
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
+		}
 	}
 }

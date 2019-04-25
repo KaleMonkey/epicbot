@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.Epic;
+import epicbot.commands.general.Help;
 import net.dv8tion.jda.core.Permission;
 
 /**
@@ -22,8 +23,15 @@ public class Restart extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		event.reply("Restarting JDA!");
-		Epic.getAPI().shutdownNow();
-		Epic.setupBot();
+		if (event.getArgs().equals(""))
+		{
+			event.reply("Restarting JDA!");
+			Epic.getAPI().shutdownNow();
+			Epic.setupBot();
+		}
+		else
+		{
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
+		}
 	}
 }

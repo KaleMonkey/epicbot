@@ -11,6 +11,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
 import epicbot.commands.general.About;
 import epicbot.commands.general.CatFact;
+import epicbot.commands.general.Help;
 import epicbot.commands.general.NSFW;
 import epicbot.commands.general.Servers;
 import epicbot.commands.moderation.Ban;
@@ -62,7 +63,7 @@ public class Epic
 	
 	/**
 	 * Returns the API.
-	 * @return a JDA instance
+	 * @return the JDA instance
 	 */
 	public static JDA getAPI()
 	{
@@ -94,17 +95,20 @@ public class Epic
 			
 			// Creates the thread pool for the bot.
 			executor = Executors.newCachedThreadPool();
+			
 			// Creates the client so we can setup the bot for start-up.
 			EventWaiter waiter = new EventWaiter();
 			CommandClientBuilder client = new CommandClientBuilder()
 					.setOwnerId(settings.getOwnerID())
 					.setPrefix(settings.getCommandPrefix())
-					.setGame(Game.listening(settings.getCommandPrefix() + "help"));
+					.setGame(Game.listening(settings.getCommandPrefix() + "help"))
+					.useHelpBuilder(false);
 			
 			// Adds commands.
 			client.addCommands(
 					// General commands.
 					new About(),
+					new Help(),
 					new NSFW(),
 					new Servers(),
 					new CatFact(),

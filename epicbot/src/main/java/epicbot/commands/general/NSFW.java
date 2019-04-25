@@ -26,32 +26,39 @@ public class NSFW extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		Member author = event.getMember();
-		Role nsfwRole = SettingsManager.getInstance().getSettings().getNsfwRole(event.getGuild());
-		
-		// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
-		if (nsfwRole == null)
+		if (event.getArgs().equals(""))
 		{
-			// Sends the automated response.
-			event.reply("This server doesn't support this command!");
-		}
-		
-		// Checks if the author already has the NSFW role.
-		if (hasRole(author, nsfwRole))
-		{
-			// If the author already has the NSFW role it will be removed.
-			event.getGuild().getController().removeRolesFromMember(author, nsfwRole).queue();
+			Member author = event.getMember();
+			Role nsfwRole = SettingsManager.getInstance().getSettings().getNsfwRole(event.getGuild());
 			
-			// Sends the response message.
-			event.reply(getRandomRemoveResponse());
+			// If there is not a dedicated NSFW role in the server it is assumed that the server doesn't want that functionality.
+			if (nsfwRole == null)
+			{
+				// Sends the automated response.
+				event.reply("This server doesn't support this command!");
+			}
+			
+			// Checks if the author already has the NSFW role.
+			if (hasRole(author, nsfwRole))
+			{
+				// If the author already has the NSFW role it will be removed.
+				event.getGuild().getController().removeRolesFromMember(author, nsfwRole).queue();
+				
+				// Sends the response message.
+				event.reply(getRandomRemoveResponse());
+			}
+			else
+			{
+				// If the author doesn't have the NSFW role it will be added.
+				event.getGuild().getController().addRolesToMember(author, nsfwRole).queue();
+				
+				// Sends the response message.
+				event.reply(getRandomAddResponse());
+			}
 		}
 		else
 		{
-			// If the author doesn't have the NSFW role it will be added.
-			event.getGuild().getController().addRolesToMember(author, nsfwRole).queue();
-			
-			// Sends the response message.
-			event.reply(getRandomAddResponse());
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
 		}
 	}
 	

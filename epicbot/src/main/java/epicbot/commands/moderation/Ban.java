@@ -5,6 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.commands.general.Help;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
@@ -19,7 +20,7 @@ public class Ban extends Command
 	{
 		this.name = "ban";
 		this.help = "Bans the specified user.";
-		this.arguments = "<@user> [reason]";
+		this.arguments = "<@user> [reason (optional)]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
 		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
@@ -30,48 +31,53 @@ public class Ban extends Command
 	{
 		try
 		{
-			// Gets the arguments for the command.
-			Member memberToBan = getMemberToBan(event);
-			String banReason = getBanReason(event);
-			
-			// Checks if the user getting banned has an OPed role.
-			if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToBan.getRoles()))
+			if (event.getArgs().split(" ").length < 1)
 			{
-				// If the user has an OPed role an automated message will be sent.
-				event.reply("Now, now. You mods play nice.");
-				return;
-			}
-			
-			// Bans the user.
-			if (banReason.equals("*No reason provided*"))
-			{
-				event.getGuild().getController().ban(memberToBan, 0).queue();
+				event.reply("You did not provide the necessary arguments for this command!" + Help.getHelp(this.name));
 			}
 			else
 			{
-				event.getGuild().getController().ban(memberToBan, 0, banReason).queue();
-			}
-			
-			// Sends message confirming that the ban worked.
-			event.reply("Banned " + memberToBan.getEffectiveName() + ".");
-			
-			// If the user getting banned is not a bot they will be sent a message telling them they got banned.
-			if (!(memberToBan.getUser().isBot()))
-			{
-				memberToBan.getUser().openPrivateChannel().queue((channel) ->
+				// Gets the arguments for the command.
+				Member memberToBan = getMemberToBan(event);
+				String banReason = getBanReason(event);
+				
+				// Checks if the user getting banned has an OPed role.
+				if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToBan.getRoles()))
 				{
-					channel.sendMessage("You have been banned from the " + event.getGuild().getName() + " server because \"" + banReason + "\".").queue();
-				});
+					// If the user has an OPed role an automated message will be sent.
+					event.reply("You cannot ban another mod!");
+					return;
+				}
+				
+				// Bans the user.
+				if (banReason.equals("*No reason provided*"))
+				{
+					event.getGuild().getController().ban(memberToBan, 0).queue();
+				}
+				else
+				{
+					event.getGuild().getController().ban(memberToBan, 0, banReason).queue();
+				}
+				
+				// Sends message confirming that the ban worked.
+				event.reply("Banned " + memberToBan.getEffectiveName() + ".");
+				
+				// If the user getting banned is not a bot they will be sent a message telling them they got banned.
+				if (!(memberToBan.getUser().isBot()))
+				{
+					memberToBan.getUser().openPrivateChannel().queue((channel) ->
+					{
+						channel.sendMessage("You have been banned from the " + event.getGuild().getName() + " server because \"" + banReason + "\".").queue();
+					});
+				}
+				
+				// Logs the ban.
+				Logger.logBan(event, memberToBan, banReason);
 			}
-			
-			// Logs the ban.
-			Logger.logBan(event, memberToBan, banReason);
 		}
 		catch (IllegalArgumentException e)
 		{
-			// If the arguments are invalid the automated message will be sent.
-			event.reply("You provided illegal arguments! Try `" +
-					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help ban` to get help with this command.");
+			return;
 		}
 	}
 	
@@ -81,7 +87,7 @@ public class Ban extends Command
 	 * @return the member to ban
 	 * @throws IllegalArgumentException
 	 */
-	private static Member getMemberToBan(CommandEvent event) throws IllegalArgumentException
+	private Member getMemberToBan(CommandEvent event) throws IllegalArgumentException
 	{
 		// Creates a member variable and gives it a default value of null.
 		Member member = null;
@@ -97,6 +103,7 @@ public class Ban extends Command
 		// If member is still at it's default value an exception will be thrown.
 		if (member == null)
 		{
+			event.reply("You did not provide a user to ban!" + Help.getHelp(this.name));
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
 		else
@@ -110,21 +117,21 @@ public class Ban extends Command
 	 * @param event the message received event
 	 * @return the reason for the ban
 	 */
-	private static String getBanReason(CommandEvent event)
+	private String getBanReason(CommandEvent event)
 	{
 		// Creates a reason variable and gives it a default value of "No reason provided".
 		String reason = "*No reason provided*";
 		
 		// Checks if the message has a reason.
-		String[] message = event.getMessage().getContentRaw().split(" ");
-		if (message.length >= 3)
+		String[] args = event.getArgs().split(" ");
+		if (args.length >= 2)
 		{
 			reason = "";
-			for (int i = 2; i < message.length; i++)
+			for (int i = 1; i < args.length; i++)
 			{
-				reason += (" " + message[i]);
+				reason += (" " + args[i]);
 			}
-			// If there is a reason provided, reason will equal it.
+			// If there is a reason provided, reason will become it.
 			reason = reason.substring(1);
 		}
 		

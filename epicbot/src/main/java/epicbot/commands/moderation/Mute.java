@@ -5,12 +5,12 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.commands.general.Help;
 import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.exceptions.HierarchyException;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -22,7 +22,7 @@ public class Mute extends Command
 		this.name = "mute";
 		this.help = "Mutes the specified user for a given amount of time. If the given time is 0," +
 				" the mute will be indefinite or until the user gets unmuted.";
-		this.arguments = "<@user> [time] [reason]";
+		this.arguments = "<@user> [time] [reason (optional)]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
 		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
@@ -33,6 +33,12 @@ public class Mute extends Command
 	{
 		try
 		{
+			if (event.getArgs().split(" ").length < 2)
+			{
+				event.reply("You did not provide the necessary arguments for this command!" + Help.getHelp(this.name));
+				return;
+			}
+			
 			// Gets the arguments for the command.
 			Member memberToMute = getMemberToMute(event);
 			int muteTime = getMuteTime(event);
@@ -42,14 +48,14 @@ public class Mute extends Command
 			if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user has an OPed role an automated message will be sent.
-				event.reply("Now, now. You mods play nice.");
+				event.reply("You cannot mute other mods!");
 				return;
 			}
 			
 			if (MutedMember.isMuted(event.getGuild(), memberToMute.getRoles()))
 			{
 				// If the user is already muted the automated message will be sent.
-				event.reply("Relax! This person is already muted.");
+				event.reply("This person is already muted!");
 				return;
 			}
 			
@@ -93,24 +99,17 @@ public class Mute extends Command
 		}
 		catch (IllegalArgumentException e)
 		{
-			// If the arguments are invalid the automated message will be sent.
-			event.reply("You provided illegal arguments! Try `" +
-					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help mute` to get help with this command.");
-		}
-		catch (HierarchyException e)
-		{
-			System.out.println("\n[Error]: The bot role is lower in the role hierarchy than the muted role!");
-			System.out.println("[Error]: Please raise the bot's role in the role hierarchy.\n");
+			return;
 		}
 	}
 	
-	/**
+	/*
 	 * Returns the member to mute from a message received event.
 	 * @param event the message received event
 	 * @return the member to mute
 	 * @throws IllegalArgumentException
 	 */
-	private static Member getMemberToMute(CommandEvent event) throws IllegalArgumentException
+	private Member getMemberToMute(CommandEvent event) throws IllegalArgumentException
 	{
 		// Creates a member variable and gives it a default value of null.
 		Member member = null;
@@ -126,6 +125,7 @@ public class Mute extends Command
 		// If member is still at it's default value an exception will be thrown.
 		if (member == null)
 		{
+			event.reply("You did not provide a user to mute!" + Help.getHelp(this.name));
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
 		else
@@ -140,17 +140,17 @@ public class Mute extends Command
 	 * @return the mute time
 	 * @throws IllegalArgumentException
 	 */
-	private static int getMuteTime(CommandEvent event) throws IllegalArgumentException
+	private int getMuteTime(CommandEvent event) throws IllegalArgumentException
 	{
 		// Creates a time variable and gives it a default value of -1.
 		int time = -1;
 		
 		// Checks if the message has an integer in the place for time.
-		if (event.getMessage().getContentRaw().split(" ").length >= 3)
+		if (event.getArgs().split(" ").length >= 2)
 		{
-			if (isInt(event.getMessage().getContentRaw().split(" ")[2]))
+			if (isInt(event.getArgs().split(" ")[1]))
 			{
-				int num = Integer.parseInt(event.getMessage().getContentRaw().split(" ")[2]);
+				int num = Integer.parseInt(event.getArgs().split(" ")[1]);
 				if (num >= 0)
 				{
 					// If there is an integer in the place of time, time will become that number.
@@ -162,6 +162,7 @@ public class Mute extends Command
 		// If time is still at it's default value an exception will be thrown.
 		if (time == -1)
 		{
+			event.reply("You did not provide a time for the mute!" + Help.getHelp(this.name));
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
 		else
@@ -181,13 +182,13 @@ public class Mute extends Command
 		String reason = "*No reason provided*";
 		
 		// Checks if the message has a reason.
-		String[] message = event.getMessage().getContentRaw().split(" ");
-		if (message.length >= 4)
+		String[] args = event.getArgs().split(" ");
+		if (args.length >= 3)
 		{
 			reason = "";
-			for (int i = 3; i < message.length; i++)
+			for (int i = 2; i < args.length; i++)
 			{
-				reason += (" " + message[i]);
+				reason += (" " + args[i]);
 			}
 			// If there is a reason provided, reason will equal it.
 			reason = reason.substring(1);

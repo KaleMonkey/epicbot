@@ -3,8 +3,8 @@ package epicbot.commands.tag;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.commands.general.Help;
 import epicbot.entities.Tag;
-import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 
 public class CreateTag extends Command
@@ -21,20 +21,19 @@ public class CreateTag extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		String[] message = event.getMessage().getContentDisplay().split(" ");
+		String[] args = event.getArgs().split(" ");
 		
-		if (message.length < 3)
+		if (args.length < 2)
 		{
-			event.reply("You provided illegal arguments! Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() +
-					"help createtag` to get help with this command.");
+			event.reply("You did not provide the necessary arguments for this command!" + Help.getHelp(this.name));
 			return;
 		}
 		
-		String tagName = message[1];
+		String tagName = args[0];
 		String tagContent = "";
-		for (int i = 2; i < message.length; i++)
+		for (int i = 1; i < args.length; i++)
 		{
-			tagContent += message[i] + " ";
+			tagContent += args[i] + " ";
 		}
 		
 		Tag tag = new Tag(tagName, tagContent);
@@ -45,7 +44,7 @@ public class CreateTag extends Command
 		}
 		else
 		{
-			event.reply("The tag name must be unique!");
+			event.reply("The tag name must be unique!" + Help.getHelp(this.name));
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.commands.general.Help;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
@@ -16,7 +17,7 @@ public class Kick extends Command
 	{
 		this.name = "kick";
 		this.help = "Kicks the specified user.";
-		this.arguments = "<@user> [reason]";
+		this.arguments = "<@user> [reason (optional)]";
 		this.category = new Category("Moderation");
 		this.guildOnly = true;
 		this.requiredRole = SettingsManager.getInstance().getSettings().getOpedRole();
@@ -27,48 +28,53 @@ public class Kick extends Command
 	{
 		try
 		{			
-			// Gets the arguments for the command.
-			Member memberToKick = getMemberToKick(event);
-			String kickReason = getKickReason(event);
-			
-			// Checks if the user getting kicked has an OPed role.
-			if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToKick.getRoles()))
+			if (event.getArgs().split(" ").length < 1)
 			{
-				// If the user has an OPed role an automated message will be sent.
-				event.reply("Now, now. You mods play nice.");
-				return;
-			}
-			
-			// Kicks the user.
-			if (kickReason.equals("*No reason provided*"))
-			{
-				event.getGuild().getController().kick(memberToKick).queue();
+				event.reply("You did not provide the necessary arguments for this command!");
 			}
 			else
 			{
-				event.getGuild().getController().kick(memberToKick, kickReason).queue();
-			}
-			
-			// Sends message confirming that the kick worked.
-			event.reply("Kicked " + memberToKick.getEffectiveName() + ".");
-			
-			// If the user getting banned is not a bot they will be sent a message telling them they got kicked.
-			if (!(memberToKick.getUser().isBot()))
-			{
-				memberToKick.getUser().openPrivateChannel().queue((channel) ->
+				// Gets the arguments for the command.
+				Member memberToKick = getMemberToKick(event);
+				String kickReason = getKickReason(event);
+				
+				// Checks if the user getting kicked has an OPed role.
+				if (SettingsManager.getInstance().getSettings().checkPerms(event.getGuild(), memberToKick.getRoles()))
 				{
-					channel.sendMessage("You have been kicked from the " + event.getGuild().getName() + " server because \"" + kickReason + "\".").queue();
-				});
+					// If the user has an OPed role an automated message will be sent.
+					event.reply("You cannot kick another mod!");
+					return;
+				}
+				
+				// Kicks the user.
+				if (kickReason.equals("*No reason provided*"))
+				{
+					event.getGuild().getController().kick(memberToKick).queue();
+				}
+				else
+				{
+					event.getGuild().getController().kick(memberToKick, kickReason).queue();
+				}
+				
+				// Sends message confirming that the kick worked.
+				event.reply("Kicked " + memberToKick.getEffectiveName() + ".");
+				
+				// If the user getting banned is not a bot they will be sent a message telling them they got kicked.
+				if (!(memberToKick.getUser().isBot()))
+				{
+					memberToKick.getUser().openPrivateChannel().queue((channel) ->
+					{
+						channel.sendMessage("You have been kicked from the " + event.getGuild().getName() + " server because \"" + kickReason + "\".").queue();
+					});
+				}
+				
+				// Logs the ban.
+				Logger.logKick(event, memberToKick, kickReason);
 			}
-			
-			// Logs the ban.
-			Logger.logKick(event, memberToKick, kickReason);
 		}
 		catch (IllegalArgumentException e)
 		{
-			// If the arguments are invalid the automated message will be sent.
-			event.reply("You provided illegal arguments! Try `" +
-					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help kick` to get help with this command.");
+			return;
 		}
 	}
 	
@@ -78,7 +84,7 @@ public class Kick extends Command
 	 * @return the member to kick
 	 * @throws IllegalArgumentException
 	 */
-	private static Member getMemberToKick(CommandEvent event)
+	private Member getMemberToKick(CommandEvent event) throws IllegalArgumentException
 	{
 		// Creates a member variable and gives it a default value of null.
 		Member member = null;
@@ -94,6 +100,7 @@ public class Kick extends Command
 		// If member is still at it's default value an exception will be thrown.
 		if (member == null)
 		{
+			event.reply("You did not provide a user to kick!" + Help.getHelp(this.name));
 			throw new IllegalArgumentException("Argument Invalid!");
 		}
 		else
@@ -113,15 +120,15 @@ public class Kick extends Command
 		String reason = "*No reason provided*";
 		
 		// Checks if the message has a reason.
-		String[] message = event.getMessage().getContentRaw().split(" ");
-		if (message.length >= 3)
+		String[] args = event.getArgs().split(" ");
+		if (args.length >= 2)
 		{
 			reason = "";
-			for (int i = 2; i < message.length; i++)
+			for (int i = 1; i < args.length; i++)
 			{
-				reason += (" " + message[i]);
+				reason += (" " + args[i]);
 			}
-			// If there is a reason provided, reason will equal it.
+			// If there is a reason provided, reason will become it.
 			reason = reason.substring(1);
 		}
 		
