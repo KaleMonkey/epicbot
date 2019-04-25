@@ -19,9 +19,9 @@ import epicbot.Epic;
 public class SettingsManager
 {
 	private static SettingsManager instance;
-	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private Settings settings;
-	private final Path configFile = new File(".").toPath().resolve("Config.json");
+	private static final Path configFile = new File(".").toPath().resolve("Config.json");
 	
 	/**
 	 * Creates SettingsManager.
