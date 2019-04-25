@@ -38,7 +38,7 @@ public class DeleteTag extends Command
 			
 			if (tag != null)
 			{
-				if (tag.getAuthor().equals(event.getAuthor()) || event.getAuthor().getId().equals(SettingsManager.getInstance().getSettings().getOwnerID()))
+				if (tag.getAuthorId() == event.getAuthor().getIdLong() || event.getAuthor().getId().equals(SettingsManager.getInstance().getSettings().getOwnerID()))
 				{
 					Tag.removeTag(tag);
 					event.reply("Deleted tag!");

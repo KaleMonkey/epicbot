@@ -36,7 +36,7 @@ public class CreateTag extends Command
 			tagContent += args[i] + " ";
 		}
 		
-		Tag tag = new Tag(tagName, tagContent, event.getAuthor());
+		Tag tag = new Tag(tagName, tagContent, event.getAuthor().getIdLong());
 		if (Tag.getTag(tag) == null)
 		{
 			Tag.addTag(tag);
