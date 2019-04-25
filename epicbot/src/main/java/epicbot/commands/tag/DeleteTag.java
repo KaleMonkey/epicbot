@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.commands.general.Help;
 import epicbot.entities.Tag;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 
 public class DeleteTag extends Command
@@ -37,8 +38,15 @@ public class DeleteTag extends Command
 			
 			if (tag != null)
 			{
-				Tag.removeTag(tag);
-				event.reply("Deleted tag!");
+				if (tag.getAuthor().equals(event.getAuthor()) || event.getAuthor().getId().equals(SettingsManager.getInstance().getSettings().getOwnerID()))
+				{
+					Tag.removeTag(tag);
+					event.reply("Deleted tag!");
+				}
+				else
+				{
+					event.reply("You do not own this tag!");
+				}
 			}
 			else
 			{
