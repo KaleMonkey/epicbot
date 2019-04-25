@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
-
-import epicbot.Epic;
-import net.dv8tion.jda.core.entities.User;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -19,23 +17,25 @@ import net.dv8tion.jda.core.entities.User;
 public class Tag implements Serializable
 {
 	private static final long serialVersionUID = 2;
+	private static final Path tagsFile = new File(".").toPath().resolve("Tags.ser");
 	
 	private static ArrayList<Tag> tags = new ArrayList<Tag>();
 	
 	private String name;
 	private String content;
-	private User author;
+	private long authorId;
 	
 	/**
-	 * Constructs a tag object with a given name and content.
+	 * Constructs a tag object with a given name, content, and author id.
 	 * @param n the name of the tag
 	 * @param c the content of the tag
+	 * @param id the id the author
 	 */
-	public Tag (String n, String c, User a)
+	public Tag (String n, String c, long id)
 	{
 		name = n;
 		content = c;
-		author = a;
+		authorId = id;
 	}
 	
 	/**
@@ -48,14 +48,14 @@ public class Tag implements Serializable
 	}
 	
 	/**
-	 * Constructs a tag object with a given name and author.
+	 * Constructs a tag object with a given name and author id.
 	 * @param n n the name of the tag
-	 * @param a the author of the tag
+	 * @param id the id the author
 	 */
-	public Tag (String n, User a)
+	public Tag (String n, long id)
 	{
 		name = n;
-		author = a;
+		authorId = id;
 	}
 	
 	/**
@@ -80,9 +80,9 @@ public class Tag implements Serializable
 	 * Returns the author of the tag.
 	 * @return the author of the tag
 	 */
-	public User getAuthor()
+	public long getAuthorId()
 	{
-		return author;
+		return authorId;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class Tag implements Serializable
 	 */
 	public String toString()
 	{
-		return name + "-" + content + "-" + author.getId();
+		return name + "-" + content + "-" + authorId;
 	}
 	
 	/**
@@ -148,10 +148,9 @@ public class Tag implements Serializable
 		try
 		{
 			// If "Tags.ser" does not exist it will be created.
-			File file = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "Tags.ser");
-			if (!file.exists())
+			if (!tagsFile.toFile().exists())
 			{
-				file.createNewFile();
+				tagsFile.toFile().createNewFile();
 			}
 			
 			// Writes the array list holding all of the tags to "Tags.ser".
@@ -179,15 +178,8 @@ public class Tag implements Serializable
 	{
 		try
 		{
-			// If "Tags.ser" does not exist it will be created.
-			File file = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "Tags.ser");
-			if (!file.exists())
-			{
-				file.createNewFile();
-			}
-			
 			// Writes the array list holding all of the tags to "Tags.ser".
-			FileInputStream fis = new FileInputStream("Tags.ser");
+			FileInputStream fis = new FileInputStream(tagsFile.toFile());
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			tags = (ArrayList<Tag>)ois.readObject();
 			ois.close();
