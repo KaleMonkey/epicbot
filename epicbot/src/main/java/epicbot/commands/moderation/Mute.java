@@ -71,7 +71,7 @@ public class Mute extends Command
 				{
 					memberToMute.getUser().openPrivateChannel().queue((channel) ->
 					{
-						channel.sendMessage("You have been muted for " + muteTime + " minutes because \"" + muteReason + "\".").queue();
+						channel.sendMessage("You have been muted in " + event.getGuild() + " server for " + muteTime + " minutes because \"" + muteReason + "\".").queue();
 					});
 				}
 				
@@ -89,9 +89,12 @@ public class Mute extends Command
 				{
 					memberToMute.getUser().openPrivateChannel().queue((channel) ->
 					{
-						channel.sendMessage("You have been muted because \"" + muteReason + "\".").queue();
+						channel.sendMessage("You have been muted in" + event.getGuild() + "server because \"" + muteReason + "\".").queue();
 					});
 				}
+				
+				// Adds the member to the MutedMember list.
+				MutedMember.addMutedMember(new MutedMember(memberToMute));
 			}
 			
 			// Logs the mute.
