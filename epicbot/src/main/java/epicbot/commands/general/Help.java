@@ -100,7 +100,10 @@ public class Help extends Command
 					eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 					eb.setTitle(cmd.getName());
 					eb.setDescription(cmd.getHelp());
-					eb.addField("Arguments", cmd.getArguments(), true);
+					if (cmd.getArguments() != null)
+					{
+						eb.addField("Arguments", cmd.getArguments(), true);
+					}
 					
 					// Opens a private channel with the user and sends the embedded message.
 					event.getAuthor().openPrivateChannel().queue((channel) ->
