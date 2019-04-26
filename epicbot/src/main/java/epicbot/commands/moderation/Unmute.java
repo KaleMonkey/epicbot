@@ -10,7 +10,6 @@ import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.exceptions.HierarchyException;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -49,12 +48,12 @@ public class Unmute extends Command
 			// Sends message confirming that the unmute worked.
 			event.reply("Unmuted " + memberToUnmute.getEffectiveName() + ".");
 			
-			// If the user getting muted is not a bot they will be sent a message telling them they got unmuted.
+			// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
 			if (!(memberToUnmute.getUser().isBot()))
 			{
 				memberToUnmute.getUser().openPrivateChannel().queue((channel) ->
 				{
-					channel.sendMessage("You have been unmuted because a mod took mercy on you.").queue();
+					channel.sendMessage("You have been unmuted in " + event.getGuild() + "because a mod took mercy on you.").queue();
 				});
 			}
 			
@@ -63,14 +62,7 @@ public class Unmute extends Command
 		}
 		catch (IllegalArgumentException e)
 		{
-			// If the arguments are invalid the automated message will be sent.
-			event.reply("You provided illegal arguments! Try `" +
-					SettingsManager.getInstance().getSettings().getCommandPrefix() + "help unmute` to get help with this command.");
-		}
-		catch (HierarchyException e)
-		{
-			System.out.println("\n[Error]: The bot role is lower in the role hierarchy than the muted role!");
-			System.out.println("[Error]: Please raise the bot's role in the role hierarchy.\n");
+			return;
 		}
 	}
 	
