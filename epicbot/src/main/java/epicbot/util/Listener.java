@@ -107,6 +107,15 @@ class RunnableThread implements Runnable
 				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrae.getGuild())))
 				{
 					MutedMember.addMutedMember(new MutedMember(gmrae.getMember()));
+					
+					// If the user getting muted is not a bot they will be sent a message telling them they got mmuted.
+					if (!(gmrae.getUser().isBot()))
+					{
+						gmrae.getUser().openPrivateChannel().queue((channel) ->
+						{
+							channel.sendMessage("You have been muted in" + gmrae.getGuild() + "server because \"*No reason provided*\".").queue();
+						});
+					}
 				}
 			}
 		}
@@ -124,6 +133,15 @@ class RunnableThread implements Runnable
 				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrre.getGuild())))
 				{
 					MutedMember.removeMutedMember(new MutedMember(gmrre.getMember()));
+					
+					// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
+					if (!(gmrre.getUser().isBot()))
+					{
+						gmrre.getUser().openPrivateChannel().queue((channel) ->
+						{
+							channel.sendMessage("You have been unmuted in " + gmrre.getGuild() + "because a mod took mercy on you.").queue();
+						});
+					}
 				}
 			}
 		}
