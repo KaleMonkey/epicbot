@@ -15,6 +15,7 @@ import epicbot.commands.general.Gay;
 import epicbot.commands.general.Help;
 import epicbot.commands.general.NSFW;
 import epicbot.commands.general.Servers;
+import epicbot.commands.general.TagCMD;
 import epicbot.commands.moderation.Ban;
 import epicbot.commands.moderation.Kick;
 import epicbot.commands.moderation.Mute;
@@ -23,9 +24,6 @@ import epicbot.commands.owner.Ping;
 import epicbot.commands.owner.ReloadConfig;
 import epicbot.commands.owner.Restart;
 import epicbot.commands.owner.Shutdown;
-import epicbot.commands.tag.CreateTag;
-import epicbot.commands.tag.DeleteTag;
-import epicbot.commands.tag.GetTag;
 import epicbot.entities.Tag;
 import epicbot.settings.Settings;
 import epicbot.settings.SettingsManager;
@@ -114,15 +112,12 @@ public class Epic
 					new Servers(),
 					new CatFact(),
 					new Gay(),
+					new TagCMD(),
 					// Moderation commands.
 					new Mute(),
 					new Unmute(),
 					new Kick(),
 					new Ban(),
-					// Tag commands.
-					new CreateTag(),
-					new DeleteTag(),
-					new GetTag(),
 					// Music commands.
 					
 					// Owner commands.
