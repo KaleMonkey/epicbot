@@ -9,21 +9,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Tag implements Serializable
+public class Tag implements Serializable, Comparable<Tag>
 {
 	private static final long serialVersionUID = 2;
 	private static final Path tagsFile = new File(".").toPath().resolve("Tags.ser");
-	
 	private static ArrayList<Tag> tags = new ArrayList<Tag>();
 	
 	private String name;
 	private String content;
 	private long authorId;
+	private String date;
+	private int timesUsed;
 	
 	/**
 	 * Constructs a tag object with a given name, content, and author id.
@@ -36,6 +40,7 @@ public class Tag implements Serializable
 		name = n;
 		content = c;
 		authorId = id;
+		date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
 	}
 	
 	/**
@@ -67,12 +72,18 @@ public class Tag implements Serializable
 		return name;
 	}
 	
+	public void setName(String n)
+	{
+		name = n;
+	}
+	
 	/**
 	 * Returns the content of the tag.
 	 * @return the content of the tag
 	 */
 	public String getContent()
 	{
+		timesUsed++;
 		return content;
 	}
 	
@@ -85,13 +96,23 @@ public class Tag implements Serializable
 		return authorId;
 	}
 	
+	public String getDate()
+	{
+		return date;
+	}
+	
+	public int getUses()
+	{
+		return timesUsed;
+	}
+	
 	/**
 	 * Returns the current tag as a string.
 	 * @return a string version of the tag
 	 */
 	public String toString()
 	{
-		return name + "-" + content + "-" + authorId;
+		return name + "-" + content + "-" + authorId + "-" + date + "-" + timesUsed;
 	}
 	
 	/**
@@ -106,12 +127,23 @@ public class Tag implements Serializable
 	}
 	
 	/**
+	 * Compares two tag objects.
+	 * @param other the other object to compare to
+	 * @return 
+	 */
+	public int compareTo(Tag o)
+	{
+		return this.name.compareTo(o.getName());
+	}
+	
+	/**
 	 * Adds a tag to an array list of tags.
 	 * @param tag the tag to be added
 	 */
 	public static void addTag(Tag tag)
 	{
 		tags.add(tag);
+		Collections.sort(tags);
 		saveTags();
 	}
 	
@@ -122,6 +154,7 @@ public class Tag implements Serializable
 	public static void removeTag(Tag tag)
 	{
 		tags.remove(tag);
+		Collections.sort(tags);
 		saveTags();
 	}
 	
@@ -132,12 +165,17 @@ public class Tag implements Serializable
 	 */
 	public static Tag getTag(Tag tag)
 	{
-		int i = tags.indexOf(tag);
-		if (i == -1)
+		int i = Collections.binarySearch(tags, tag);
+		if (i < 0)
 		{
 			return null;
 		}
 		return tags.get(i);
+	}
+	
+	public static ArrayList<Tag> getAllTags()
+	{
+		return tags;
 	}
 	
 	/**
@@ -147,12 +185,6 @@ public class Tag implements Serializable
 	{
 		try
 		{
-			// If "Tags.ser" does not exist it will be created.
-			if (!tagsFile.toFile().exists())
-			{
-				tagsFile.toFile().createNewFile();
-			}
-			
 			// Writes the array list holding all of the tags to "Tags.ser".
 			FileOutputStream fos = new FileOutputStream("Tags.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -178,7 +210,20 @@ public class Tag implements Serializable
 	{
 		try
 		{
-			// Writes the array list holding all of the tags to "Tags.ser".
+			// If "Tags.ser" does not exist it will be created.
+			if (!tagsFile.toFile().exists())
+			{
+				tagsFile.toFile().createNewFile();
+				
+				// Writes to the file so the bot doesn't give the "Could not find "Tags.ser"" error on start-up.
+				FileOutputStream fos = new FileOutputStream("Tags.ser");
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(tags);
+				oos.flush();
+				oos.close();
+			}
+			
+			// Reads from "Tags.ser" and loads it into the array list holding all of the tags.
 			FileInputStream fis = new FileInputStream(tagsFile.toFile());
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			tags = (ArrayList<Tag>)ois.readObject();
