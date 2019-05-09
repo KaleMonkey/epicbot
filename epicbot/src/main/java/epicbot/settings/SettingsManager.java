@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import epicbot.Epic;
+import epicbot.entities.Server;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -130,6 +131,9 @@ public class SettingsManager
         newSettings.setMuteRole("");
         newSettings.setNsfwRole("");
         newSettings.setLogChannelName("");
+        Server[] servers = new Server[1];
+        servers[0] = new Server("servername", "hostname", 00000, 00000, "rconpassword");
+        newSettings.setServers(servers);
         return newSettings;
     }
 }

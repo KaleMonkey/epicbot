@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import epicbot.entities.Server;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
@@ -22,6 +23,7 @@ public class Settings
 	private String muteRole;
 	private String nsfwRole;
 	private String logChannelName;
+	private Server[] servers;
 	
 	public void setBotToken(String token)
 	{
@@ -76,6 +78,16 @@ public class Settings
 	public void setLogChannelName(String channelName)
 	{
 		logChannelName = channelName;
+	}
+	
+	public void setServers(Server[] s)
+	{
+		servers = s;
+	}
+	
+	public Server[] getServers()
+	{
+		return servers;
 	}
 	
 	/**
