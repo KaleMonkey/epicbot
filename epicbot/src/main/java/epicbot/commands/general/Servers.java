@@ -6,8 +6,11 @@ import java.net.Socket;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.entities.Server;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.kronos.rkon.core.Rcon;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -27,9 +30,8 @@ public class Servers extends Command
 	{
 		if (event.getArgs().equals(""))
 		{
-			// Creates arrays of server names and the ports they are running on.
-			String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
-			int[] ports = {25565, 25566, 27015};
+			// Loads the provided servers from the Config.json.
+			Server[] servers = SettingsManager.getInstance().getSettings().getServers();
 			
 			// Starts building an embedded message with the server's status.
 			EmbedBuilder eb = new EmbedBuilder();
@@ -37,15 +39,28 @@ public class Servers extends Command
 			for (int i = 0; i < servers.length; i++)
 			{
 				// Checks if the server is listening on the provided port.
-				if (isServerListening("kale.ddns.net", ports[i]))
+				if (isServerListening(servers[i].getHostName(), servers[i].getPort()))
 				{
+					String result = ":large_blue_circle: Online";
+					
+					try
+					{
+						Rcon rcon = new Rcon(servers[i].getHostName(), servers[i].getRconPort(), servers[i].getRconPassword().getBytes());
+						result += "\n" + rcon.command("list").split(" ")[2] + " players online";
+					}
+					catch (Exception e)
+					{
+						result += "\nUnable to get player count";
+					}
+					
 					// If it is online a field will be added to the message.
-					eb.addField(servers[i], ":large_blue_circle: Online", true);
+					eb.addField(servers[i].getServerName(), result, true);
+					
 				}
 				else
 				{
 					// If it is offline a field will be added to the message.
-					eb.addField(servers[i], ":red_circle: Offline", true);
+					eb.addField(servers[i].getServerName(), ":red_circle: Offline", true);
 				}
 			}
 			
@@ -64,13 +79,13 @@ public class Servers extends Command
 	 * @param port the port that the server is running on
 	 * @return true if there is a server running at the host on the specified port, false if there is not.
 	 */
-	private static boolean isServerListening(String host, int port)
+	public static boolean isServerListening(String host, int port)
 	{
 		Socket s = new Socket();
 		
 		try
 		{
-			s.connect(new InetSocketAddress(host, port), 3);
+			s.connect(new InetSocketAddress(host, port), 1000);
 			return true;
 		}
 		catch (Exception e)
