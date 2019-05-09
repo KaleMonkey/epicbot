@@ -54,7 +54,7 @@ public class Epic
 	 * @param args the command line arguments
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args)
 	{
 		// Sets up the bot for running.	
 		setupBot();
@@ -143,44 +143,25 @@ public class Epic
 		}
 		catch (IllegalArgumentException e)
         {
-            try
-            {
-            	System.out.println("\n[Epic]: No login details provided! Please provide a botToken in the config.\n");
-            	System.out.println("Press Enter to terminate...");
-            	System.in.read();
-            	System.exit(NO_USERNAME_PASS_COMBO);
-            }
-            catch (IOException ioe)
-            {
-            	e.printStackTrace();
-            }
+            System.out.println("\n[Epic]: No login details provided! Please provide a botToken in the config.\n");
+            System.out.println("Press Enter to terminate...");
+            try {System.in.read();} catch (IOException e1) {e1.printStackTrace();}
+            System.exit(NO_USERNAME_PASS_COMBO);
         }
         catch (LoginException e)
         {
-            try
-            {	System.out.println("\n[Epic]: The botToken provided in the Config.json was incorrect.");
-            	System.out.println("Did you modify the Config.json after it was created?\n");
-            	System.out.println("Press Enter to terminate...");
-            	System.in.read();
-            	System.exit(BAD_USERNAME_PASS_COMBO);
-            }
-            catch (IOException ioe)
-            {
-            	e.printStackTrace();
-            }
+            System.out.println("\n[Epic]: The botToken provided in the Config.json was incorrect.");
+            System.out.println("Did you modify the Config.json after it was created?\n");
+            System.out.println("Press Enter to terminate...");
+            try {System.in.read();} catch (IOException e1) {e1.printStackTrace();}
+            System.exit(BAD_USERNAME_PASS_COMBO);
         }
         catch (InterruptedException e)
         {
-            try
-            {	System.out.println("\n[Epic]: The login thread was interrupted!\n");
-            	System.out.println("Press Enter to terminate...");
-            	System.in.read();
-            	System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
-            }
-            catch (IOException ioe)
-            {
-            	e.printStackTrace();
-            }
+        	System.out.println("\n[Epic]: The login thread was interrupted!\n");
+            System.out.println("Press Enter to terminate...");
+            try {System.in.read();} catch (IOException e1) {e1.printStackTrace();}
+            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
 	}
 
