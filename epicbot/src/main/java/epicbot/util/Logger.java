@@ -16,7 +16,8 @@ public class Logger
 	/**
 	 * Logs a mute in the specified log channel.
 	 * @param event the event parsed during the command
-	 * @param arguments the arguments obtained during the command
+	 * @param memberToMute the member that got muted
+	 * @param muteTime how long the member is to be muted
 	 */
 	public static void logMute(CommandEvent event, Member memberToMute, int muteTime, String muteReason)
 	{
@@ -40,7 +41,7 @@ public class Logger
 	/**
 	 * Logs the unmute in the specified log channel.
 	 * @param event the event parsed during the command
-	 * @param arguments the arguments obtained during the command
+	 * @param memberToUnmute the member that got unmuted
 	 */
 	public static void logUnmute(CommandEvent event, Member memberToUnmute)
 	{
