@@ -3,7 +3,7 @@
   <groupId>com.kale.maven</groupId>
   <artifactId>epicbot</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>com.kale.maven.epicbot</name>
   
   	<build>
