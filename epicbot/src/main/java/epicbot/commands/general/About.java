@@ -29,7 +29,7 @@ public class About extends Command
 		if (event.getArgs().equals(""))
 		{
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 			eb.setDescription("The Epic bot is a discord bot created for the Epic Gamers discord server. It is currently in development and is prone to bugs. If you find any bugs report them to Kale!");
 			eb.addField("Author", "Kale", true);
 			eb.addField("GitHub", "https://github.com/KaleMonkey/epicbot", true);

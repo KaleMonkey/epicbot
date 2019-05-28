@@ -35,7 +35,7 @@ public class Servers extends Command
 			
 			// Starts building an embedded message with the server's status.
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 			for (int i = 0; i < servers.length; i++)
 			{
 				// Checks if the server is listening on the provided port.

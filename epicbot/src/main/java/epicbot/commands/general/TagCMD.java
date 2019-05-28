@@ -209,7 +209,7 @@ public class TagCMD extends Command
 			{
 				// If the tag with the given name does exist the tag details will be sent.
 				EmbedBuilder eb = new EmbedBuilder();
-				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+				eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 				eb.addField(tag.getName(), "Author: " + Epic.getAPI().getUserById(tag.getAuthorId()).getName() + "\nDate Created: " + tag.getDate() + "\nTimes Used: " + tag.getUses() + "\nContent: " + tag.getContent(), false);
 				event.reply(eb.build());
 			}

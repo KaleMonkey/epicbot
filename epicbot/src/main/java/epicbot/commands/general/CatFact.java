@@ -32,7 +32,7 @@ public class CatFact extends Command
 		if (event.getArgs().equals(""))
 		{
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 			eb.setTitle("Cat Fact");
 			eb.setDescription(facts[(int)(Math.random() * facts.length)]);
 			event.reply(eb.build());
