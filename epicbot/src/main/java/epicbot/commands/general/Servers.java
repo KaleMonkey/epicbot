@@ -1,113 +1,75 @@
 package epicbot.commands.general;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import epicbot.Epic;
-import epicbot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+
+import epicbot.entities.Server;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.requests.restaction.pagination.MessagePaginationAction;
+import net.dv8tion.jda.core.Permission;
+import net.kronos.rkon.core.Rcon;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Servers implements Command
+public class Servers extends Command
 {
-	private static final String commandName = "Servers";
-	private static final String commandDescription = "Gets a list of servers provided by Kale and shows if they are running or not";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "servers`";
-	private static final boolean commandGuildOnly = false;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public Servers()
 	{
-		return commandName;
+		this.name = "servers";
+		this.help = "Gets a list of servers provided by Kale and shows if they are running or not.";
+		this.category = new Category("General");
+		this.guildOnly = false;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
+	public void execute(CommandEvent event)
 	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
-	{
-		try
+		if (event.getArgs().equals(""))
 		{
-			if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("servers"))
+			// Loads the provided servers from the Config.json.
+			Server[] servers = SettingsManager.getInstance().getSettings().getServers();
+			
+			// Starts building an embedded message with the server's status.
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
+			for (int i = 0; i < servers.length; i++)
 			{
-				// Notifies the user that this command might take a little while to complete.
-				event.getChannel().sendMessage("This might take a while.").queue();
-				
-				// Creates arrays of server names and the ports they are running on.
-				String[] servers = {"Vanilla Tweaks", "Sky Factory", "CS:GO"};
-				int[] ports = {25565, 25566, 27015};
-				
-				// Starts building an embedded message with the server's status.
-				EmbedBuilder eb = new EmbedBuilder();
-				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				for (int i = 0; i < servers.length; i++)
+				// Checks if the server is listening on the provided port.
+				if (isServerListening(servers[i].getHostName(), servers[i].getPort()))
 				{
-					// Checks if the server is listening on the provided port.
-					if (isServerListening("kale.ddns.net", ports[i]))
+					String result = ":large_blue_circle: Online";
+					
+					try
 					{
-						// If it is online a field will be added to the message.
-						eb.addField(servers[i], ":large_blue_circle: Online", true);
+						Rcon rcon = new Rcon(servers[i].getHostName(), servers[i].getRconPort(), servers[i].getRconPassword().getBytes());
+						result += "\n" + rcon.command("list").split(" ")[2] + " players online";
 					}
-					else
+					catch (Exception e)
 					{
-						// If it is offline a field will be added to the message.
-						eb.addField(servers[i], ":red_circle: Offline", true);
+						result += "\nUnable to get player count";
 					}
+					
+					// If it is online a field will be added to the message.
+					eb.addField(servers[i].getServerName(), result, true);
+					
 				}
-				
-				// Deletes the "This might take a second." message.
-				MessagePaginationAction action = event.getChannel().getIterableHistory();
-				for (Message message : action)
+				else
 				{
-					if (message.getContentRaw().equals("This might take a while.") && message.getAuthor().isBot())
-					{
-						event.getChannel().deleteMessageById(message.getIdLong()).queue();
-						break;
-					}
+					// If it is offline a field will be added to the message.
+					eb.addField(servers[i].getServerName(), ":red_circle: Offline", true);
 				}
-				
-				// Sends the generated message.
-				event.getChannel().sendMessage(eb.build()).queue();
 			}
+			
+			// Sends the generated message.
+			event.reply(eb.build());
 		}
-		catch (Exception e)
+		else
 		{
-			// Idk, just in case something goes wrong lmfao.
+			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
 		}
 	}
 	
@@ -117,13 +79,13 @@ public class Servers implements Command
 	 * @param port the port that the server is running on
 	 * @return true if there is a server running at the host on the specified port, false if there is not.
 	 */
-	private static boolean isServerListening(String host, int port)
+	public static boolean isServerListening(String host, int port)
 	{
-		Socket s = null;
+		Socket s = new Socket();
 		
 		try
 		{
-			s = new Socket(host, port);
+			s.connect(new InetSocketAddress(host, port), 1000);
 			return true;
 		}
 		catch (Exception e)

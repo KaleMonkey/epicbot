@@ -1,4 +1,4 @@
-package epicbot.util;
+package epicbot.settings;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import epicbot.Epic;
+import epicbot.entities.Server;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -19,26 +20,15 @@ import epicbot.Epic;
 public class SettingsManager
 {
 	private static SettingsManager instance;
-	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private Settings settings;
-	private final Path configFile = new File(".").toPath().resolve("Config.json");
-	private final Path startFile = new File(".").toPath().resolve("Start.bat");
+	private static final Path configFile = new File(".").toPath().resolve("Config.json");
 	
 	/**
 	 * Creates SettingsManager.
 	 */
 	public SettingsManager() throws IOException
 	{
-		// Checks if Start.bat exists. If it doesn't exist it will be created.
-		if (!startFile.toFile().exists())
-		{
-			System.out.println("\n[Epic]: Creating Start.bat file.");
-			System.out.println("[Epic]: You will need to start the bot by opening the Start.bat file to see the console logs.\n");
-			// Writes the Start.bat file.
-			Files.write(startFile, "cmd /k java -jar bot.jar".getBytes());
-			System.exit(Epic.NEWLY_CREATED_START);
-		}
-		
 		// Checks if Config.json exists. If it doesn't exist it will be created.
 		if (!configFile.toFile().exists())
 		{
@@ -47,6 +37,8 @@ public class SettingsManager
 			// Gets default Config.json and saves it then closes the program.
 			this.settings = getDefaultSettings();
 			saveSettings();
+			System.out.println("Press Enter to terminate...");
+			System.in.read();
 			System.exit(Epic.NEWLY_CREATED_CONFIG);
 		}
 		// Loads the settings from Config.json.
@@ -75,6 +67,7 @@ public class SettingsManager
 		// Returns the SettingsManager.
 		return instance;
 	}
+	
 	/**
 	 * Reads from Config.json and loads settings.
 	 */
@@ -117,7 +110,6 @@ public class SettingsManager
 	
 	/**
 	 * Returns the settings object.
-	 * 
 	 * @return settings object.
 	 */
 	public Settings getSettings()
@@ -127,18 +119,21 @@ public class SettingsManager
 	
 	/**
 	 * Returns a settings object with the default values for the Config.json file.
-	 * 
 	 * @return settings object.
 	 */
     private Settings getDefaultSettings()
     {
         Settings newSettings = new Settings();
         newSettings.setBotToken("");
+        newSettings.setOwnerID("");
         newSettings.setCommandPrefix("");
         newSettings.setOpedRole("");
         newSettings.setMuteRole("");
         newSettings.setNsfwRole("");
         newSettings.setLogChannelName("");
+        Server[] servers = new Server[1];
+        servers[0] = new Server("servername", "hostname", 00000, 00000, "rconpassword");
+        newSettings.setServers(servers);
         return newSettings;
     }
 }

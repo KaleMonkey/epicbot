@@ -1,4 +1,4 @@
-package epicbot.util;
+package epicbot.entities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,31 +8,39 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import epicbot.Epic;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Tag implements Serializable
+public class Tag implements Serializable, Comparable<Tag>
 {
-	private static final long serialVersionUID = 1;
-	
+	private static final long serialVersionUID = 2;
+	private static final Path tagsFile = new File(".").toPath().resolve("Tags.ser");
 	private static ArrayList<Tag> tags = new ArrayList<Tag>();
 	
 	private String name;
 	private String content;
+	private long authorId;
+	private String date;
+	private int timesUsed;
 	
 	/**
-	 * Constructs a tag object with a given name and content.
+	 * Constructs a tag object with a given name, content, and author id.
 	 * @param n the name of the tag
 	 * @param c the content of the tag
+	 * @param id the id the author
 	 */
-	public Tag (String n, String c)
+	public Tag (String n, String c, long id)
 	{
 		name = n;
 		content = c;
+		authorId = id;
+		date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
 	}
 	
 	/**
@@ -45,6 +53,17 @@ public class Tag implements Serializable
 	}
 	
 	/**
+	 * Constructs a tag object with a given name and author id.
+	 * @param n n the name of the tag
+	 * @param id the id the author
+	 */
+	public Tag (String n, long id)
+	{
+		name = n;
+		authorId = id;
+	}
+	
+	/**
 	 * Returns the name of the tag.
 	 * @return the name of the tag
 	 */
@@ -53,10 +72,6 @@ public class Tag implements Serializable
 		return name;
 	}
 	
-	/**
-	 * Sets the name of the tag.
-	 * @param n the name of the tag
-	 */
 	public void setName(String n)
 	{
 		name = n;
@@ -68,16 +83,27 @@ public class Tag implements Serializable
 	 */
 	public String getContent()
 	{
+		timesUsed++;
 		return content;
 	}
 	
 	/**
-	 * Sets the content of the tag.
-	 * @param c the content of the tag
+	 * Returns the author of the tag.
+	 * @return the author of the tag
 	 */
-	public void setContent(String c)
+	public long getAuthorId()
 	{
-		content = c;
+		return authorId;
+	}
+	
+	public String getDate()
+	{
+		return date;
+	}
+	
+	public int getUses()
+	{
+		return timesUsed;
 	}
 	
 	/**
@@ -86,7 +112,7 @@ public class Tag implements Serializable
 	 */
 	public String toString()
 	{
-		return name + "-" + content;
+		return name + "-" + content + "-" + authorId + "-" + date + "-" + timesUsed;
 	}
 	
 	/**
@@ -101,12 +127,23 @@ public class Tag implements Serializable
 	}
 	
 	/**
+	 * Compares two tag objects.
+	 * @param other the other object to compare to
+	 * @return 
+	 */
+	public int compareTo(Tag o)
+	{
+		return this.name.compareTo(o.getName());
+	}
+	
+	/**
 	 * Adds a tag to an array list of tags.
 	 * @param tag the tag to be added
 	 */
 	public static void addTag(Tag tag)
 	{
 		tags.add(tag);
+		Collections.sort(tags);
 		saveTags();
 	}
 	
@@ -117,6 +154,7 @@ public class Tag implements Serializable
 	public static void removeTag(Tag tag)
 	{
 		tags.remove(tag);
+		Collections.sort(tags);
 		saveTags();
 	}
 	
@@ -127,12 +165,17 @@ public class Tag implements Serializable
 	 */
 	public static Tag getTag(Tag tag)
 	{
-		int i = tags.indexOf(tag);
-		if (i == -1)
+		int i = Collections.binarySearch(tags, tag);
+		if (i < 0)
 		{
 			return null;
 		}
 		return tags.get(i);
+	}
+	
+	public static ArrayList<Tag> getAllTags()
+	{
+		return tags;
 	}
 	
 	/**
@@ -142,13 +185,6 @@ public class Tag implements Serializable
 	{
 		try
 		{
-			// If "Tags.ser" does not exist it will be created.
-			File file = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "Tags.ser");
-			if (!file.exists())
-			{
-				file.createNewFile();
-			}
-			
 			// Writes the array list holding all of the tags to "Tags.ser".
 			FileOutputStream fos = new FileOutputStream("Tags.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -175,14 +211,20 @@ public class Tag implements Serializable
 		try
 		{
 			// If "Tags.ser" does not exist it will be created.
-			File file = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "Tags.ser");
-			if (!file.exists())
+			if (!tagsFile.toFile().exists())
 			{
-				file.createNewFile();
+				tagsFile.toFile().createNewFile();
+				
+				// Writes to the file so the bot doesn't give the "Could not find "Tags.ser"" error on start-up.
+				FileOutputStream fos = new FileOutputStream("Tags.ser");
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(tags);
+				oos.flush();
+				oos.close();
 			}
 			
-			// Writes the array list holding all of the tags to "Tags.ser".
-			FileInputStream fis = new FileInputStream("Tags.ser");
+			// Reads from "Tags.ser" and loads it into the array list holding all of the tags.
+			FileInputStream fis = new FileInputStream(tagsFile.toFile());
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			tags = (ArrayList<Tag>)ois.readObject();
 			ois.close();

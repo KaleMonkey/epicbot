@@ -1,97 +1,72 @@
 package epicbot.commands.general;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
+
 import epicbot.Epic;
-import epicbot.commands.Command;
-import epicbot.util.CommandHandler;
+import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.Permission;
 
 /**
  * @author Kyle Minter (Kale Monkey)
  */
-public class Help implements Command
+public class Help extends Command
 {
-	private static final String commandName = "Help";
-	private static final String commandDescription = "Provides a list of known commands or specific usage intructions for a command.";
-	private static final String commandUsage = "`" + Epic.settings.getCommandPrefix() + "help <Command>`" +
-			"\nCommand must be a known command.";
-	private static final boolean commandGuildOnly = false;
-	
-	/**
-	 * Returns the name of the command.
-	 * @return the command name
-	 */
-	public String getName()
+	public Help()
 	{
-		return commandName;
+		this.name = "help";
+		this.help = "Sends a list of commands or gets usage instructions for a specified command.";
+		this.arguments = "[command (optional)]";
+		this.category = new Category("General");
+		this.guildOnly = false;
+		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
 	}
 	
-	/**
-	 * Returns the description of the command
-	 * @return the command description
-	 */
-	public String getDescription()
+	public void execute(CommandEvent event)
 	{
-		return commandDescription;
-	}
-	
-	/**
-	 * Returns the usage instructions of the command
-	 * @return the command description
-	 */
-	public String getUsage()
-	{
-		return commandUsage;
-	}
-	
-	/**
-	 * Checks if the command can be only used in a server.
-	 * @return true if it can only be used in a server, false if it can be used elsewhere
-	 */
-	public boolean GuildOnly()
-	{
-		return commandGuildOnly;
-	}
-	
-	/**
-	 * Attempts to execute the command.
-	 * @param event the event containing the message
-	 */
-	public void execute(MessageReceivedEvent event)
-	{
-		try
+		// If there are more than one argument an error message will be sent.
+		if (event.getArgs().split(" ").length > 1)
 		{
-			if (event.getMessage().getContentRaw().substring(1).equalsIgnoreCase("help"))
+			event.reply("You provided too many arguments!" + getHelp(this.name));
+		}
+		else 
+		{
+			// Grabs a list of commands.
+			List<Command> commands = null;
+			List<Object> listeners = Epic.getAPI().getRegisteredListeners();
+			for (Object l : listeners)
 			{
-				// Starts building an embedded message.
-				EmbedBuilder eb = new EmbedBuilder();
-				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				eb.setDescription("Try `" + Epic.settings.getCommandPrefix() + "help <Command>` to get specific usage instructions for a command!");
+				if (l instanceof CommandClientImpl)
+				{
+					commands = ((CommandClientImpl)l).getCommands();
+				}
+			}
+			
+			// If the command call has no arguments a list of commands will be sent.
+			if (event.getArgs().contentEquals(""))
+			{
+				//Starts building an embedded message.
+				EmbedBuilder eb =new EmbedBuilder();
+				eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
+				eb.setDescription("Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "help [command]` to get specific usage instructions for a command!");
 				
-				// Adds all the command names to a string.
-				String gen = "";
-				String mod = "";
-				String tag = "";
-				for (Command command : Command.GENERAL_COMMANDS)
+				// Assembles a list of all the commands.
+				String temp = "";
+				for (Command command : commands)
 				{
-					gen += command.getName() + "\n";
-				}
-				for (Command command : Command.MOD_COMMANDS)
-				{
-					mod += command.getName() + "\n";
-				}
-				for (Command command : Command.TAG_COMMANDS)
-				{
-					tag += command.getName() + "\n";
+					// If a command is an owner command it will be excluded from the list.
+					if (!command.isOwnerCommand())
+					{
+						temp += command.getName() + "\n";
+					}
 				}
 				
 				// Puts all the command names into a field.
-				eb.addField("General", gen, true);
-				eb.addField("Moderation", mod, true);
-				eb.addField("Tag", tag, true);
+				eb.addField("Commands", temp, true);
 				
 				// Opens a private channel with the user and sends the embedded message.
 				event.getAuthor().openPrivateChannel().queue((channel) ->
@@ -101,47 +76,47 @@ public class Help implements Command
 			}
 			else
 			{
-				List<Object> arguments = getArguments(event);
+				Command cmd = null;
 				
-				// Builds an embedded message with the command's name, description, and usage instructions.
-				EmbedBuilder eb = new EmbedBuilder();
-				eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
-				eb.setTitle(((Command)arguments.get(0)).getName());
-				eb.setDescription(((Command)arguments.get(0)).getDescription());
-				eb.addField("Usage", ((Command)arguments.get(0)).getUsage(), false);
-				
-				// Opens a private channel with the user and sends the embedded message.
-				event.getAuthor().openPrivateChannel().queue((channel) ->
+				// Checks if the provided argument matches any of the command names.
+				for (Command command : commands)
 				{
-					channel.sendMessage(eb.build()).queue();
-				});
+					if (event.getArgs().split(" ")[0].equalsIgnoreCase(command.getName()))
+					{
+						// If the argument matches a command name the command object is saved.
+						cmd = command;
+					}
+				}
+				
+				// If cmd is still null an error message will be sent.
+				if (cmd == null)
+				{
+					event.reply("The command provided does not match any know commands!" + getHelp(this.name));
+				}
+				else
+				{
+					// Builds the help message for the specified command.
+					EmbedBuilder eb = new EmbedBuilder();
+					eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
+					eb.setTitle(cmd.getName());
+					eb.setDescription(cmd.getHelp());
+					if (cmd.getArguments() != null)
+					{
+						eb.addField("Arguments", cmd.getArguments(), true);
+					}
+					
+					// Opens a private channel with the user and sends the embedded message.
+					event.getAuthor().openPrivateChannel().queue((channel) ->
+					{
+						channel.sendMessage(eb.build()).queue();
+					});
+				}
 			}
-		}
-		catch (IllegalArgumentException e)
-		{
-			// If the arguments are invalid the automated message will be sent.
-			event.getChannel().sendMessage("You provided illegal arguments! Try `" +
-					Epic.settings.getCommandPrefix() + "help` to get a list of commands.").queue();
 		}
 	}
 	
-	private List<Object> getArguments(MessageReceivedEvent event) throws IllegalArgumentException
+	public static String getHelp(String cmdName)
 	{
-		String[] m = event.getMessage().getContentRaw().substring(1).split(" ");
-		
-		if (m.length < 1)
-		{
-			throw new IllegalArgumentException();
-		}
-		
-		Command command = CommandHandler.checkCommands(m[1]);
-		if (command == null)
-		{
-			throw new IllegalArgumentException();
-		}
-		
-		List<Object> arguments = new ArrayList<Object>();
-		arguments.add(command);
-		return arguments;
+		return " Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + cmdName + "` to get help with this command!";
 	}
 }
