@@ -262,7 +262,7 @@ public class TagCMD extends Command
 		{
 			// Starts building a embedded message for the tags.
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.setAuthor("Epic Gamer Bot", "https://github.com/KaleMonkey/epicbot");
+			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
 			eb.setTitle("Tags");
 			
 			// Gets all of the tags.
