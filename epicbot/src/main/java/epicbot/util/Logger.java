@@ -18,6 +18,7 @@ public class Logger
 	 * @param event the event parsed during the command
 	 * @param memberToMute the member that got muted
 	 * @param muteTime how long the member is to be muted
+	 * @param muteReason the reason the member was muted
 	 */
 	public static void logMute(CommandEvent event, Member memberToMute, int muteTime, String muteReason)
 	{
@@ -55,6 +56,9 @@ public class Logger
 	
 	/**
 	 * Logs the kick in the specified log channel.
+	 * @param event the event parsed during the command
+	 * @param memberToKick the member that got kicked
+	 * @param kickReason the reason the member was kicked
 	 */
 	public static void logKick(CommandEvent event, Member memberToKick, String kickReason)
 	{
@@ -68,6 +72,9 @@ public class Logger
 	
 	/**
 	 * Logs the ban in the specified log channel.
+	 * @param event the event parsed during the command
+	 * @param memberToBan the member that got banned
+	 * @param banReason the reason the member got banned
 	 */
 	public static void logBan(CommandEvent event, Member memberToBan, String banReason)
 	{
