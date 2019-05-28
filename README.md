@@ -1,7 +1,7 @@
 # epicbot
 A discord bot using JDA.
 
-CHANGE LOG
+## CHANGE LOG
 	epicbot-0.0.1-SNAPSHOT
 		-Initial release.
 
@@ -27,30 +27,31 @@ CHANGE LOG
 		-Created tag system and associated commands.
 		-The bot will now respond to messages that are from a server and mention the bot with a random shit post.
 		-Mute timers will now be ended once "unmute" command is called to avoid having unnecessary threads running and having worse performance because of it.
-  
-  epicbot-0.0.4-SNAPSHOT
-    Overall:
-      -The bot no longer creates "Start.bat" and newer versions will be made into .exe's.
-      -Now uses a cached thread pool for better performance.
-      -All references to "Epic Gamer Bot" have been changed to "Epic."
-      -The bot no longer sends shitposts when mentioned.
-      -Commands now give specific error messages.
-      -Fixed the "Could not find "Tags.ser"" error on startup.
-    Commands:
-      -Added "Gay" command.
-      -Added owner commands "ReloadConfig", "Restart", and "Shutdown."
-      -"Ping" command is now an owner command.
-      -Mod commands no longer send "You must have an OPed role to use this command."
-      -"Servers" command no longer sends the "This might take a while." message and is a lot faster when checking if servers are listening.
-      -"Servers" command now shows the player count of a server.
-    Mutes/Unmutes:
-      -Now logs mutes and unmutes that are done manually through discord.
-      -Users are now notified of the server a mute/unmute occured in instead of just a mute/unmute occuring.
-    Tags:
-      -Tags now store the date they were created, the author, and the amount of times they have been used.
-      -All tag related commands are now integrated into one command known as "Tag."
-      -Only the tag author can delete a tag.
-      (These updates mean any tags created with the older version of the bot will not work)
-    Config:
-      -Servers can be added in the "Config.json" for use in the "Servers" command.
-      -An owner ID can be put in the "Config.json" so a user can use the owner commands.
+
+	epicbot-0.0.4-SNAPSHOT
+		Overall:
+			-The bot no longer creates "Start.bat" and newer versions will be made into .exe's.
+			-Now uses a cached thread pool for better performance.
+			-All references to "Epic Gamer Bot" have been changed to "Epic.
+			-The bot no longer sends shitposts when mentioned.
+			-Commands now give specific error messages.
+			-Fixed the "Could not find "Tags.ser"" error on startup.
+		Commands:
+			-Added "Gay" command.
+			-Added owner commands "ReloadConfig", "Restart", and "Shutdown."
+			-"Ping" command is now an owner command.
+			-Mod commands no longer send "You must have an OPed role to use this command."
+			-"Servers" command no longer sends the "This might take a while." message and is a lot faster when checking if servers are listening.
+			-"Servers" command now shows the player count of a server.
+		Mutes/Unmutes:
+			-Now logs mutes and unmutes that are done manually through discord.
+			-Users are now notified of the server a mute/unmute occured in instead of just a mute/unmute occuring.
+		Tags:
+			-Tags now store the date they were created, the author, and the amount of times they have been used.
+			-All tag related commands are now integrated into one command known as "Tag."
+			-Only the tag author can delete a tag.
+			(These updates mean any tags created with the older version of the bot will not work)
+		Config:
+			-Servers can be added in the "Config.json" for use in the "Servers" command.
+			-An owner ID can be put in the "Config.json" so a user can use the owner commands.
+ 
