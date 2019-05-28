@@ -33,7 +33,7 @@ public class About extends Command
 			eb.setDescription("The Epic bot is a discord bot created for the Epic Gamers discord server. It is currently in development and is prone to bugs. If you find any bugs report them to Kale!");
 			eb.addField("Author", "Kale", true);
 			eb.addField("GitHub", "https://github.com/KaleMonkey/epicbot", true);
-			eb.addField("Libraries", "JDA - https://github.com/DV8FromTheWorld/JDA\nJDA-Utilities - https://github.com/JDA-Applications/JDA-Utilities\nGSON - https://github.com/google/gson", true);
+			eb.addField("Libraries", "JDA - https://github.com/DV8FromTheWorld/JDA\nJDA-Utilities - https://github.com/JDA-Applications/JDA-Utilities\nGSON - https://github.com/google/gson\nRkon-Core - https://github.com/Kronos666/rkon-core", true);
 			File currentBuild = new File(Epic.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 			eb.addField("Current Build", currentBuild.getName().substring(0, currentBuild.getName().length() - 4), false);
 			MessageEmbed m = eb.build();
