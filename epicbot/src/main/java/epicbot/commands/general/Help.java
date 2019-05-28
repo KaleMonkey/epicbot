@@ -117,6 +117,6 @@ public class Help extends Command
 	
 	public static String getHelp(String cmdName)
 	{
-		return " Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + cmdName + "` to get help with this command!";
+		return " Try `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "help" + cmdName + "` to get help with this command!";
 	}
 }
