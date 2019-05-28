@@ -67,9 +67,12 @@ public class MutedMember
 	public static void removeMutedMember(MutedMember mutedMember)
 	{
 		int i = mutedMembers.indexOf(mutedMember);
-		if (i != -1)
+		if (i > -1)
 		{
-			mutedMembers.get(mutedMembers.indexOf(mutedMember)).getTimer().cancel();;
+			if (mutedMembers.get(i).getTimer() != null)
+			{
+				mutedMembers.get(i).getTimer().cancel();
+			}
 			mutedMembers.remove(i);
 		}
 	}
