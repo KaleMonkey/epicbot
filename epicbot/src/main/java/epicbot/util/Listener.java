@@ -9,11 +9,13 @@ import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
 
 /**
@@ -49,7 +51,23 @@ class RunnableThread implements Runnable
 	 */
 	public void run()
 	{
-		if (event instanceof GuildMemberJoinEvent)
+		if (event instanceof MessageReceivedEvent)
+		{
+			MessageReceivedEvent mre = (MessageReceivedEvent)event;
+			
+			List<User> mentionedUsers = mre.getMessage().getMentionedUsers();
+			for (User m : mentionedUsers)
+			{
+				if (m.equals(Epic.getAPI().getSelfUser()))
+				{
+					String[] shitposts = {"bruh", "stop", "can you fuck off?", "why are you @ing me right now..", "i will end you loser", "fuck you"};
+					mre.getChannel().sendMessage(shitposts[(int)(Math.random() * shitposts.length)]).queue();
+					return;
+				}
+			}
+
+		}
+		else if (event instanceof GuildMemberJoinEvent)
 		{
 			GuildMemberJoinEvent gmje = (GuildMemberJoinEvent)event;
 			
