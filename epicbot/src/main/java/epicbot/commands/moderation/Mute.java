@@ -89,7 +89,7 @@ public class Mute extends Command
 				{
 					memberToMute.getUser().openPrivateChannel().queue((channel) ->
 					{
-						channel.sendMessage("You have been muted in" + event.getGuild() + "server because \"" + muteReason + "\".").queue();
+						channel.sendMessage("You have been muted in" + event.getGuild().getName() + "server because \"" + muteReason + "\".").queue();
 					});
 				}
 				

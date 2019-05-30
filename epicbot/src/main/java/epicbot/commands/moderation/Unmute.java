@@ -53,7 +53,7 @@ public class Unmute extends Command
 			{
 				memberToUnmute.getUser().openPrivateChannel().queue((channel) ->
 				{
-					channel.sendMessage("You have been unmuted in " + event.getGuild() + "because a mod took mercy on you.").queue();
+					channel.sendMessage("You have been unmuted in " + event.getGuild().getName() + "because a mod took mercy on you.").queue();
 				});
 			}
 			
