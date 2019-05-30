@@ -33,6 +33,10 @@ public class Help extends Command
 		{
 			event.reply("You provided too many arguments!" + getHelp(this.name));
 		}
+		else if ((event.getArgs().split(" "))[0].equalsIgnoreCase("me"))
+		{
+			event.reply("just kill yourself fag");
+		}
 		else 
 		{
 			// Grabs a list of commands.
