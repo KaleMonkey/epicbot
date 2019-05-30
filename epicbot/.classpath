@@ -16,7 +16,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson_lib"/>
-	<classpathentry kind="lib" path="H:/Downloads/rkon-core-1.1.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

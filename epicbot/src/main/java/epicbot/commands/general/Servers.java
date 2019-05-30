@@ -1,16 +1,13 @@
 package epicbot.commands.general;
 
-import java.net.InetSocketAddress;
-import java.net.Socket;
-
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.entities.Server;
 import epicbot.settings.SettingsManager;
+import epicbot.util.Rcon;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.kronos.rkon.core.Rcon;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -39,25 +36,30 @@ public class Servers extends Command
 			for (int i = 0; i < servers.length; i++)
 			{
 				// Checks if the server is listening on the provided port.
-				if (isServerListening(servers[i].getHostName(), servers[i].getPort()))
+				try
 				{
+					Rcon rcon = new Rcon(servers[i].getHostName(), servers[i].getRconPort(), 1000, servers[i].getRconPassword().getBytes());
+					
+					// If it is online then a blue circle emoji will be added to the results.
 					String result = ":large_blue_circle: Online";
 					
+					// Attemps to get the player count of the server.
 					try
 					{
-						Rcon rcon = new Rcon(servers[i].getHostName(), servers[i].getRconPort(), servers[i].getRconPassword().getBytes());
+						// If it is able to get the player count it will be added to the results.
 						result += "\n" + rcon.command("list").split(" ")[2] + " players online";
 					}
 					catch (Exception e)
 					{
+						// If it is unable to get the player count then an error message will be added to the results
 						result += "\nUnable to get player count";
 					}
 					
-					// If it is online a field will be added to the message.
+					// After the getting the player count has been attempted the results will be added to a field in the message.
 					eb.addField(servers[i].getServerName(), result, true);
 					
 				}
-				else
+				catch(Exception e)
 				{
 					// If it is offline a field will be added to the message.
 					eb.addField(servers[i].getServerName(), ":red_circle: Offline", true);
@@ -70,35 +72,6 @@ public class Servers extends Command
 		else
 		{
 			event.reply("This command does not have any arguments!" + Help.getHelp(this.name));
-		}
-	}
-	
-	/**
-	 * Checks if there is a server running on the provided host and port.
-	 * @param host ip or hostname of the computer running the server
-	 * @param port the port that the server is running on
-	 * @return true if there is a server running at the host on the specified port, false if there is not.
-	 */
-	public static boolean isServerListening(String host, int port)
-	{
-		Socket s = new Socket();
-		
-		try
-		{
-			s.connect(new InetSocketAddress(host, port), 1000);
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-		finally
-		{
-			if (s != null)
-			{
-				try {s.close();}
-				catch (Exception e) {}
-			}
 		}
 	}
 }
