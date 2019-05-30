@@ -30,7 +30,7 @@ public class Gay extends Command
 			}
 			else
 			{
-				int percentage = (int)(Math.random() * 100);
+				int percentage = (int)(Math.random() * 101);
 				event.reply(event.getAuthor().getAsMention() + " is " + percentage + "% gay.");
 			}
 		}
