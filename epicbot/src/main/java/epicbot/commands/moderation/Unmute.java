@@ -43,19 +43,12 @@ public class Unmute extends Command
 			
 			// Unmutes the user.
 			event.getGuild().getController().removeRolesFromMember(memberToUnmute, SettingsManager.getInstance().getSettings().getMuteRole(event.getGuild())).queue();
-			MutedMember.removeMutedMember(new MutedMember(memberToUnmute));
 			
 			// Sends message confirming that the unmute worked.
 			event.reply("Unmuted " + memberToUnmute.getEffectiveName() + ".");
 			
-			// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
-			if (!(memberToUnmute.getUser().isBot()))
-			{
-				memberToUnmute.getUser().openPrivateChannel().queue((channel) ->
-				{
-					channel.sendMessage("You have been unmuted in " + event.getGuild().getName() + "because a mod took mercy on you.").queue();
-				});
-			}
+			// Removes the member from the MutedMember list.
+			MutedMember.removeMutedMember(new MutedMember(memberToUnmute));
 			
 			// Logs the unmute.
 			Logger.logUnmute(event, memberToUnmute);
