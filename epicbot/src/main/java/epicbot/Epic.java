@@ -11,6 +11,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
 import epicbot.commands.general.About;
 import epicbot.commands.general.CatFact;
+import epicbot.commands.general.EightBall;
 import epicbot.commands.general.Gay;
 import epicbot.commands.general.Help;
 import epicbot.commands.general.NSFW;
@@ -113,6 +114,7 @@ public class Epic
 					new CatFact(),
 					new Gay(),
 					new TagCMD(),
+					new EightBall(),
 					// Moderation commands.
 					new Mute(),
 					new Unmute(),
