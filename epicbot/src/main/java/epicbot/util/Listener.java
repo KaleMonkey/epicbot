@@ -77,7 +77,7 @@ class RunnableThread implements Runnable
 				// Opens a private channel with the user and sends the welcome message.
 				gmje.getUser().openPrivateChannel().queue((channel) ->
 				{
-					channel.sendMessage("Welcome to the " + gmje.getGuild().getName() + " discord server!").queue();
+					channel.sendMessage("Welcome to the \"" + gmje.getGuild().getName() + "\" discord server!").queue();
 				});
 			}
 		}
@@ -100,7 +100,7 @@ class RunnableThread implements Runnable
 							// Opens a private channel with the user and sends the leave message.
 							gmle.getUser().openPrivateChannel().queue((channel) ->
 							{
-								channel.sendMessage("Sad to see you leave " + gmle.getGuild().getName() + "!").queue();
+								channel.sendMessage("Sad to see you leave the \"" + gmle.getGuild().getName() + "\" discord server!").queue();
 							});
 						}
 					}
@@ -131,7 +131,7 @@ class RunnableThread implements Runnable
 					{
 						gmrae.getUser().openPrivateChannel().queue((channel) ->
 						{
-							channel.sendMessage("You have been muted in the\"" + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
+							channel.sendMessage("You have been muted in the\" " + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
 						});
 					}
 				}
@@ -157,7 +157,7 @@ class RunnableThread implements Runnable
 					{
 						gmrre.getUser().openPrivateChannel().queue((channel) ->
 						{
-							channel.sendMessage("You have been unmuted in " + gmrre.getGuild().getName() + "because a mod took mercy on you.").queue();
+							channel.sendMessage("You have been unmuted in the \"" + gmrre.getGuild().getName() + "\" discord server because a mod took mercy on you.").queue();
 						});
 					}
 				}
