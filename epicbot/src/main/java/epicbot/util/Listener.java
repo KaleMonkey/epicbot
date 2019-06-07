@@ -131,7 +131,7 @@ class RunnableThread implements Runnable
 					{
 						gmrae.getUser().openPrivateChannel().queue((channel) ->
 						{
-							channel.sendMessage("You have been muted in" + gmrae.getGuild().getName() + "server because \"*No reason provided*\".").queue();
+							channel.sendMessage("You have been muted in the\"" + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
 						});
 					}
 				}
