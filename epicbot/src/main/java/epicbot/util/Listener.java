@@ -131,7 +131,7 @@ class RunnableThread implements Runnable
 					{
 						gmrae.getUser().openPrivateChannel().queue((channel) ->
 						{
-							channel.sendMessage("You have been muted in" + gmrae.getGuild() + "server because \"*No reason provided*\".").queue();
+							channel.sendMessage("You have been muted in" + gmrae.getGuild().getName() + "server because \"*No reason provided*\".").queue();
 						});
 					}
 				}
@@ -157,7 +157,7 @@ class RunnableThread implements Runnable
 					{
 						gmrre.getUser().openPrivateChannel().queue((channel) ->
 						{
-							channel.sendMessage("You have been unmuted in " + gmrre.getGuild() + "because a mod took mercy on you.").queue();
+							channel.sendMessage("You have been unmuted in " + gmrre.getGuild().getName() + "because a mod took mercy on you.").queue();
 						});
 					}
 				}
