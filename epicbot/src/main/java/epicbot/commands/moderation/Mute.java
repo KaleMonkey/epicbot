@@ -66,15 +66,6 @@ public class Mute extends Command
 				// Sends message confirming that the mute worked.
 				event.reply("Muted " + memberToMute.getEffectiveName() + " for " + muteTime + " minutes.");
 				
-				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
-				if (!(memberToMute.getUser().isBot()))
-				{
-					memberToMute.getUser().openPrivateChannel().queue((channel) ->
-					{
-						channel.sendMessage("You have been muted in " + event.getGuild() + " server for " + muteTime + " minutes because \"" + muteReason + "\".").queue();
-					});
-				}
-				
 				// Sets up a timer to unmute the user after the given time.
 				MutedMember.addMutedMember(new MutedMember(memberToMute, muteTime));
 				
@@ -83,15 +74,6 @@ public class Mute extends Command
 			{
 				// Sends message confirming that the mute worked.
 				event.reply("Muted " + memberToMute.getEffectiveName() + ".");
-				
-				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
-				if (!(memberToMute.getUser().isBot()))
-				{
-					memberToMute.getUser().openPrivateChannel().queue((channel) ->
-					{
-						channel.sendMessage("You have been muted in" + event.getGuild().getName() + "server because \"" + muteReason + "\".").queue();
-					});
-				}
 				
 				// Adds the member to the MutedMember list.
 				MutedMember.addMutedMember(new MutedMember(memberToMute));
