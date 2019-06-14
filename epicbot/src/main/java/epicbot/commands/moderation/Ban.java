@@ -82,8 +82,8 @@ public class Ban extends Command
 	}
 	
 	/**
-	 * Returns the member to ban from a message received event.
-	 * @param event the message received event
+	 * Returns the member to ban from a command event.
+	 * @param event the command event
 	 * @return the member to ban
 	 * @throws IllegalArgumentException
 	 */
@@ -113,8 +113,8 @@ public class Ban extends Command
 	}
 	
 	/**
-	 * Returns the ban reason from a message received event.
-	 * @param event the message received event
+	 * Returns the ban reason from a command event.
+	 * @param event the command event
 	 * @return the reason for the ban
 	 */
 	private String getBanReason(CommandEvent event)

@@ -60,8 +60,8 @@ public class Unmute extends Command
 	}
 	
 	/**
-	 * Returns the member to unmute from the message received event.
-	 * @param event the message received event
+	 * Returns the member to unmute from the command event.
+	 * @param event the command event
 	 * @return the member to unmute
 	 * @throws IllegalArgumentException
 	 */

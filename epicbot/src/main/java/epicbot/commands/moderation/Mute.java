@@ -89,8 +89,8 @@ public class Mute extends Command
 	}
 	
 	/*
-	 * Returns the member to mute from a message received event.
-	 * @param event the message received event
+	 * Returns the member to mute from a command event.
+	 * @param event the command event
 	 * @return the member to mute
 	 * @throws IllegalArgumentException
 	 */
@@ -120,8 +120,8 @@ public class Mute extends Command
 	}
 	
 	/**
-	 * Returns the mute time from a message received event
-	 * @param event the message received event
+	 * Returns the mute time from a command event
+	 * @param event the command event
 	 * @return the mute time
 	 * @throws IllegalArgumentException
 	 */
@@ -157,8 +157,8 @@ public class Mute extends Command
 	}
 	
 	/**
-	 * Returns the mute reason from a message received event.
-	 * @param event the message received event
+	 * Returns the mute reason from a command event.
+	 * @param event the command event
 	 * @return the reason for the mute
 	 */
 	private static String getMuteReason(CommandEvent event)

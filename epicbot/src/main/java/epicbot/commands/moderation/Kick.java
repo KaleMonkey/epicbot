@@ -79,8 +79,8 @@ public class Kick extends Command
 	}
 	
 	/**
-	 * Returns the member to kick from a message received event.
-	 * @param event the message received event
+	 * Returns the member to kick from a command event.
+	 * @param event the command event
 	 * @return the member to kick
 	 * @throws IllegalArgumentException
 	 */
@@ -110,8 +110,8 @@ public class Kick extends Command
 	}
 	
 	/**
-	 * Returns the kick reason from a message received event.
-	 * @param event the message received event
+	 * Returns the kick reason from a command event.
+	 * @param event the command event
 	 * @return the reason for the kick
 	 */
 	private static String getKickReason(CommandEvent event)
