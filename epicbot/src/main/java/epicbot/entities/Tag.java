@@ -96,11 +96,19 @@ public class Tag implements Serializable, Comparable<Tag>
 		return authorId;
 	}
 	
+	/**
+	 * Returns the date the tag was created.
+	 * @return the date the tag was created
+	 */
 	public String getDate()
 	{
 		return date;
 	}
 	
+	/**
+	 * Returns the amount of times the tag has been used.
+	 * @return the amount of times the tag has been used
+	 */
 	public int getUses()
 	{
 		return timesUsed;
