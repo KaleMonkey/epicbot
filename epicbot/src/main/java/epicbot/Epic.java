@@ -18,6 +18,7 @@ import epicbot.commands.general.NSFW;
 import epicbot.commands.general.Servers;
 import epicbot.commands.general.TagCMD;
 import epicbot.commands.moderation.Ban;
+import epicbot.commands.moderation.BotBanCMD;
 import epicbot.commands.moderation.Kick;
 import epicbot.commands.moderation.Mute;
 import epicbot.commands.moderation.Unmute;
@@ -25,6 +26,7 @@ import epicbot.commands.owner.Ping;
 import epicbot.commands.owner.ReloadConfig;
 import epicbot.commands.owner.Restart;
 import epicbot.commands.owner.Shutdown;
+import epicbot.entities.BotBan;
 import epicbot.entities.Tag;
 import epicbot.settings.Settings;
 import epicbot.settings.SettingsManager;
@@ -120,6 +122,7 @@ public class Epic
 					new Unmute(),
 					new Kick(),
 					new Ban(),
+					new BotBanCMD(),
 					// Music commands.
 					
 					// Owner commands.
@@ -140,8 +143,9 @@ public class Epic
 			api.awaitReady();			
 			System.out.println("\n[Epic]: Finished building JDA!\n");
 			
-			// Loads "Tags.ser"
+			// Loads "Tags.ser" and "BotBans.ser"
 			Tag.loadTags();
+			BotBan.loadBotBans();
 		}
 		catch (IllegalArgumentException e)
         {
