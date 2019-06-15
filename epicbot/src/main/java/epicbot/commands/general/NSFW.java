@@ -5,6 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.entities.BotBan;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -26,7 +27,11 @@ public class NSFW extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		if (event.getArgs().equals(""))
+		if (BotBan.isBotBanned(event.getMember()))
+		{
+			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+		}
+		else if (event.getArgs().equals(""))
 		{
 			Member author = event.getMember();
 			Role nsfwRole = SettingsManager.getInstance().getSettings().getNsfwRole(event.getGuild());

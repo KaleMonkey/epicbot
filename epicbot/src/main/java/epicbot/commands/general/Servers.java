@@ -3,6 +3,7 @@ package epicbot.commands.general;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.entities.BotBan;
 import epicbot.entities.Server;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Rcon;
@@ -25,7 +26,11 @@ public class Servers extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		if (event.getArgs().equals(""))
+		if (BotBan.isBotBanned(event.getMember()))
+		{
+			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+		}
+		else if (event.getArgs().equals(""))
 		{
 			// Loads the provided servers from the Config.json.
 			Server[] servers = SettingsManager.getInstance().getSettings().getServers();

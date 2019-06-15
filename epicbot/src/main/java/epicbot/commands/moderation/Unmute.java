@@ -5,6 +5,7 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.entities.BotBan;
 import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
@@ -31,6 +32,12 @@ public class Unmute extends Command
 	{
 		try
 		{
+			if (BotBan.isBotBanned(event.getMember()))
+			{
+				event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+				return;
+			}
+			
 			// Gets the arguments for the command.
 			Member memberToUnmute = getMemberToUnmute(event);
 			

@@ -3,6 +3,7 @@ package epicbot.commands.general;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import epicbot.entities.BotBan;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 
@@ -29,7 +30,11 @@ public class CatFact extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		if (event.getArgs().equals(""))
+		if (BotBan.isBotBanned(event.getMember()))
+		{
+			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+		}
+		else if (event.getArgs().equals(""))
 		{
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");

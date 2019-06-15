@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.Epic;
+import epicbot.entities.BotBan;
 import epicbot.entities.Tag;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -32,6 +33,12 @@ public class TagCMD extends Command
 	
 	public void execute(CommandEvent event)
 	{
+		if (BotBan.isBotBanned(event.getMember()))
+		{
+			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+			return;
+		}
+		
 		// Puts the arguments into an array.
 		String[] args = event.getArgs().split(" ");
 		

@@ -7,6 +7,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 
 import epicbot.Epic;
+import epicbot.entities.BotBan;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -28,6 +29,12 @@ public class Help extends Command
 	
 	public void execute(CommandEvent event)
 	{
+		if (BotBan.isBotBanned(event.getMember()))
+		{
+			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+			return;
+		}
+		
 		// If there are more than one argument an error message will be sent.
 		if (event.getArgs().split(" ").length > 1)
 		{

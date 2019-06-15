@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.commands.general.Help;
+import epicbot.entities.BotBan;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
@@ -28,7 +29,11 @@ public class Kick extends Command
 	{
 		try
 		{			
-			if (event.getArgs().split(" ").length < 1)
+			if (BotBan.isBotBanned(event.getMember()))
+			{
+				event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+			}
+			else if (event.getArgs().split(" ").length < 1)
 			{
 				event.reply("You did not provide the necessary arguments for this command!");
 			}

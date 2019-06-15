@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import epicbot.commands.general.Help;
+import epicbot.entities.BotBan;
 import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
@@ -33,7 +34,11 @@ public class Mute extends Command
 	{
 		try
 		{
-			if (event.getArgs().split(" ").length < 2)
+			if (BotBan.isBotBanned(event.getMember()))
+			{
+				event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
+			}
+			else if (event.getArgs().split(" ").length < 2)
 			{
 				event.reply("You did not provide the necessary arguments for this command!" + Help.getHelp(this.name));
 				return;
