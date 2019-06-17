@@ -14,7 +14,7 @@ public class EightBall extends Command
 	public EightBall()
 	{
 		this.name = "8ball";
-		this.help = "Gives a percentage of how gay a user is.";
+		this.help = "Shakes the 8ball.";
 		this.category = new Category("General");
 		this.guildOnly = false;
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
