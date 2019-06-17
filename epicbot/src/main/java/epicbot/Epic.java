@@ -10,6 +10,7 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
 import epicbot.commands.general.About;
+import epicbot.commands.general.BruhMoment;
 import epicbot.commands.general.CatFact;
 import epicbot.commands.general.EightBall;
 import epicbot.commands.general.Gay;
@@ -117,6 +118,7 @@ public class Epic
 					new Gay(),
 					new TagCMD(),
 					new EightBall(),
+					new BruhMoment(),
 					// Moderation commands.
 					new Mute(),
 					new Unmute(),
