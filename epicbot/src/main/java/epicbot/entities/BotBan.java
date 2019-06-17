@@ -75,7 +75,14 @@ public class BotBan implements Serializable
 	 */
 	public static boolean isBotBanned(Member member)
 	{
-		return botBans.contains(new BotBan(member));
+		if (member != null)
+		{
+			return botBans.contains(new BotBan(member));
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
