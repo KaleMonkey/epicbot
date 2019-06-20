@@ -58,7 +58,7 @@ public class Help extends Command
 			}
 			
 			// If the command call has no arguments a list of commands will be sent.
-			if (event.getArgs().contentEquals(""))
+			if (event.getArgs().equals(""))
 			{
 				//Starts building an embedded message.
 				EmbedBuilder eb =new EmbedBuilder();
