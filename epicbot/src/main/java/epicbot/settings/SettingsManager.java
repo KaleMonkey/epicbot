@@ -129,7 +129,10 @@ public class SettingsManager
         newSettings.setCommandPrefix("");
         newSettings.setOpedRole("");
         newSettings.setMuteRole("");
-        newSettings.setNsfwRole("");
+        newSettings.setBotBanRole("");
+        newSettings.setMinigameRole("");
+        String[] roles = {"role name"};
+        newSettings.setToggleableRoles(roles);
         newSettings.setLogChannelName("");
         Server[] servers = new Server[1];
         servers[0] = new Server("servername", "hostname", 00000, 00000, "rconpassword");
