@@ -15,7 +15,7 @@ import epicbot.commands.general.CatFact;
 import epicbot.commands.general.EightBall;
 import epicbot.commands.general.Gay;
 import epicbot.commands.general.Help;
-import epicbot.commands.general.NSFW;
+import epicbot.commands.general.RoleMe;
 import epicbot.commands.general.Servers;
 import epicbot.commands.general.TagCMD;
 import epicbot.commands.moderation.Ban;
@@ -112,13 +112,13 @@ public class Epic
 					// General commands.
 					new About(),
 					new Help(),
-					new NSFW(),
 					new Servers(),
 					new CatFact(),
 					new Gay(),
 					new TagCMD(),
 					new EightBall(),
 					new BruhMoment(),
+					new RoleMe(),
 					// Moderation commands.
 					new Mute(),
 					new Unmute(),
