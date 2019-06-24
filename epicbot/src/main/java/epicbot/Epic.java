@@ -148,6 +148,8 @@ public class Epic
 			// Loads "Tags.ser" and "BotBans.ser"
 			Tag.loadTags();
 			BotBan.loadBotBans();
+			
+			System.out.println("\n[Epic]: Successfully set up bot! Running as normal.\n");
 		}
 		catch (IllegalArgumentException e)
         {

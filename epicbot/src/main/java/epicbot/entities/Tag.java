@@ -236,6 +236,7 @@ public class Tag implements Serializable, Comparable<Tag>
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			tags = (ArrayList<Tag>)ois.readObject();
 			ois.close();
+			System.out.println("\n[Epic]: Loaded \"Tags.ser\"!\n");
 		}
 		catch (FileNotFoundException e)
 		{
