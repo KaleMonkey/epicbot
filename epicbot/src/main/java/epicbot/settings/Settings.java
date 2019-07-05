@@ -163,9 +163,33 @@ public class Settings
 		return r.get(0);
 	}
 	
+	/**
+	 * Returns the bot ban role for the given server.
+	 * @param g the guild to get the role from
+	 * @return the bot ban role
+	 */
 	public Role getBotBanRole(Guild g)
 	{
-		return null;
+		List<Role> r = g.getRolesByName(botBanRole, true);
+		
+		// Checks if the server has a bot ban role with the same name as the one provided in the config.json.
+		if (r.size() > 0)
+		{
+			// If the role does exist in the server it will be returned.
+			return r.get(0);
+		}
+		
+		// If the role does not exist in the server it will be made.
+		g.getController().createRole().setName(botBanRole).setColor(new Color(153, 170, 181)).setMentionable(false).setHoisted(false).queue();
+		
+		// Because it takes a hot second for JDA to create the role we must wait.
+		while (r.size() < 1)
+		{
+			r = g.getRolesByName(botBanRole, true);
+		}
+		
+		// Once the role is finally created we will return it.
+		return r.get(0);
 	}
 	
 	/**
