@@ -49,6 +49,8 @@ public class MutedMember
 					}
 					// Logs the unmute.
 					Logger.logMuteExpiration(mutedMember.getGuild(), mutedMember, time);
+					// Removes the user from the MutedMembers list.
+					MutedMember.removeMutedMember(new MutedMember(mutedMember));
 				}
 			}
 		}, time * 60000);
