@@ -57,6 +57,15 @@ public class Unmute extends Command
 			// Sends message confirming that the unmute worked.
 			event.reply("Unmuted " + memberToUnmute.getEffectiveName() + ".");
 			
+			// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
+			if (!(memberToUnmute.getUser().isBot()))
+			{
+				memberToUnmute.getUser().openPrivateChannel().queue((channel) ->
+				{
+					channel.sendMessage("You have been unmuted in the \"" + event.getGuild().getName() + "\" discord server because a mod lifted your mute.").queue();
+				});
+			}
+			
 			// Logs the unmute.
 			Logger.logUnmute(event, memberToUnmute);
 		}

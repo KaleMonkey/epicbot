@@ -68,17 +68,34 @@ public class Mute extends Command
 			event.getGuild().getController().addRolesToMember(memberToMute, SettingsManager.getInstance().getSettings().getMuteRole(event.getGuild())).queue();
 			if (muteTime > 0)
 			{
-				// Sends message confirming that the mute worked.
-				event.reply("Muted " + memberToMute.getEffectiveName() + " for " + muteTime + " minutes.");
-				
 				// Sets up a timer to unmute the user after the given time.
 				MutedMember.addMutedMember(new MutedMember(memberToMute, muteTime));
 				
+				// Sends message confirming that the mute worked.
+				event.reply("Muted " + memberToMute.getEffectiveName() + " for " + muteTime + " minute(s).");
+				
+				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
+				if (!(memberToMute.getUser().isBot()))
+				{
+					memberToMute.getUser().openPrivateChannel().queue((channel) ->
+					{
+						channel.sendMessage("You have been muted in the \"" + event.getGuild().getName() + "\" discord server for " + muteTime + " minute(s) because \"" + muteReason + ".\"").queue();
+					});
+				}
 			}
 			else
 			{
 				// Sends message confirming that the mute worked.
 				event.reply("Muted " + memberToMute.getEffectiveName() + ".");
+				
+				// If the user getting muted is not a bot they will be sent a message telling them they got muted.
+				if (!(memberToMute.getUser().isBot()))
+				{
+					memberToMute.getUser().openPrivateChannel().queue((channel) ->
+					{
+						channel.sendMessage("You have been muted in the \"" + event.getGuild().getName() + "\" discord server indefinatly because \"" + muteReason + ".\"").queue();
+					});
+				}
 			}
 			
 			// Logs the mute.
