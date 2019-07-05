@@ -39,6 +39,14 @@ public class MutedMember
 				{
 					// Unmutes the user.
 					mutedMember.getGuild().getController().removeRolesFromMember(mutedMember, SettingsManager.getInstance().getSettings().getMuteRole(mutedMember.getGuild())).queue();
+					// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
+					if (!(mutedMember.getUser().isBot()))
+					{
+						mutedMember.getUser().openPrivateChannel().queue((channel) ->
+						{
+							channel.sendMessage("You have been unmuted in the \"" + mutedMember.getGuild().getName() + "\" discord server after " + time + " minute(s) because your mute time has expired.").queue();
+						});
+					}
 					// Logs the unmute.
 					Logger.logMuteExpiration(mutedMember.getGuild(), mutedMember, time);
 				}
