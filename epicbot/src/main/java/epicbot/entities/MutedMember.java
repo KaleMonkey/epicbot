@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import epicbot.settings.SettingsManager;
+import epicbot.util.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -36,7 +37,10 @@ public class MutedMember
 				// If the user is still muted they will be unmuted.
 				if (isMuted(mutedMember.getGuild(), mutedMember.getRoles()))
 				{
+					// Unmutes the user.
 					mutedMember.getGuild().getController().removeRolesFromMember(mutedMember, SettingsManager.getInstance().getSettings().getMuteRole(mutedMember.getGuild())).queue();
+					// Logs the unmute.
+					Logger.logMuteExpiration(mutedMember.getGuild(), mutedMember, time);
 				}
 			}
 		}, time * 60000);
