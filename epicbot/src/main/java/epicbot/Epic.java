@@ -27,7 +27,6 @@ import epicbot.commands.owner.Ping;
 import epicbot.commands.owner.ReloadConfig;
 import epicbot.commands.owner.Restart;
 import epicbot.commands.owner.Shutdown;
-import epicbot.entities.BotBan;
 import epicbot.entities.Tag;
 import epicbot.settings.Settings;
 import epicbot.settings.SettingsManager;
@@ -145,9 +144,8 @@ public class Epic
 			api.awaitReady();			
 			System.out.println("\n[Epic]: Finished building JDA!\n");
 			
-			// Loads "Tags.ser" and "BotBans.ser"
+			// Loads "Tags.ser."
 			Tag.loadTags();
-			BotBan.loadBotBans();
 			
 			System.out.println("\n[Epic]: Successfully set up bot! Running as normal.\n");
 		}
