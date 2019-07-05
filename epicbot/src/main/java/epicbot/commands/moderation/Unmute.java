@@ -51,11 +51,11 @@ public class Unmute extends Command
 			// Unmutes the user.
 			event.getGuild().getController().removeRolesFromMember(memberToUnmute, SettingsManager.getInstance().getSettings().getMuteRole(event.getGuild())).queue();
 			
-			// Sends message confirming that the unmute worked.
-			event.reply("Unmuted " + memberToUnmute.getEffectiveName() + ".");
-			
 			// Removes the member from the MutedMember list.
 			MutedMember.removeMutedMember(new MutedMember(memberToUnmute));
+			
+			// Sends message confirming that the unmute worked.
+			event.reply("Unmuted " + memberToUnmute.getEffectiveName() + ".");
 			
 			// Logs the unmute.
 			Logger.logUnmute(event, memberToUnmute);

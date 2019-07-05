@@ -79,9 +79,6 @@ public class Mute extends Command
 			{
 				// Sends message confirming that the mute worked.
 				event.reply("Muted " + memberToMute.getEffectiveName() + ".");
-				
-				// Adds the member to the MutedMember list.
-				MutedMember.addMutedMember(new MutedMember(memberToMute));
 			}
 			
 			// Logs the mute.

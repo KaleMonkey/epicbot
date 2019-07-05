@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import epicbot.Epic;
-import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
@@ -121,19 +120,36 @@ class RunnableThread implements Runnable
 			
 			for (Role role : addedRoles)
 			{
-				// If any of the added roles matches the mute role the member will be added to the MutedMember list.
+				// If any of the added roles matches the mute role the mute will be logged.
 				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrae.getGuild())))
 				{
-					MutedMember.addMutedMember(new MutedMember(gmrae.getMember()));
-					
-					// If the user getting muted is not a bot they will be sent a message telling them they got mmuted.
-					if (!(gmrae.getUser().isBot()))
+					try
 					{
-						gmrae.getUser().openPrivateChannel().queue((channel) ->
+						List<AuditLogEntry> list = gmrae.getGuild().getAuditLogs().cache(false).limit(1).submit().get(30, TimeUnit.SECONDS);
+						
+						for (AuditLogEntry ale : list)
 						{
-							channel.sendMessage("You have been muted in the\" " + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
-						});
-					}
+							if (ale.getType().equals(ActionType.MEMBER_ROLE_UPDATE))
+							{
+								// If the mute role was added through the bot it won't be logged because it will have already been logged.
+								if (!(ale.getUser().equals(Epic.getAPI().getSelfUser())))
+								{
+									// Logs the mute.
+									Logger.logMute(gmrae, ale.getUser(), gmrae.getMember(), 0, "*No reason provided*");
+									
+									// If the user getting muted is not a bot they will be sent a message telling them they got mmuted.
+									if (!(gmrae.getUser().isBot()))
+									{
+										gmrae.getUser().openPrivateChannel().queue((channel) ->
+										{
+											channel.sendMessage("You have been muted in the\" " + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
+										});
+									}
+									return;
+								}
+							}
+						}
+					}catch (Exception e){}
 				}
 			}
 		}
@@ -147,19 +163,36 @@ class RunnableThread implements Runnable
 			
 			for (Role role : removedRoles)
 			{
-				// If any of the removed roles matches the mute role the member will be removed from the MutedMember list.
+				// If any of the removed roles matches the mute role the unmute will be logged.
 				if (role.equals(SettingsManager.getInstance().getSettings().getMuteRole(gmrre.getGuild())))
 				{
-					MutedMember.removeMutedMember(new MutedMember(gmrre.getMember()));
 					
-					// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
-					if (!(gmrre.getUser().isBot()))
+					try
 					{
-						gmrre.getUser().openPrivateChannel().queue((channel) ->
+						List<AuditLogEntry> list = gmrre.getGuild().getAuditLogs().cache(false).limit(1).submit().get(30, TimeUnit.SECONDS);
+						
+						for (AuditLogEntry ale : list)
 						{
-							channel.sendMessage("You have been unmuted in the \"" + gmrre.getGuild().getName() + "\" discord server because a mod took mercy on you.").queue();
-						});
-					}
+							if (ale.getType().equals(ActionType.MEMBER_ROLE_UPDATE))
+							{
+								// If the mute role was removed through the bot it won't be logged because it will have already been logged.
+								if (!(ale.getUser().equals(Epic.getAPI().getSelfUser())))
+								{
+									Logger.logUnmute(gmrre, ale.getUser(), gmrre.getMember());
+									
+									// If the user getting unmuted is not a bot they will be sent a message telling them they got unmuted.
+									if (!(gmrre.getUser().isBot()))
+									{
+										gmrre.getUser().openPrivateChannel().queue((channel) ->
+										{
+											channel.sendMessage("You have been unmuted in the \"" + gmrre.getGuild().getName() + "\" discord server because a mod took mercy on you.").queue();
+										});
+									}
+									return;
+								}
+							}
+						}
+					}catch (Exception e){}
 				}
 			}
 		}
