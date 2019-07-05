@@ -19,7 +19,7 @@ import epicbot.commands.general.RoleMe;
 import epicbot.commands.general.Servers;
 import epicbot.commands.general.TagCMD;
 import epicbot.commands.moderation.Ban;
-import epicbot.commands.moderation.BotBanCMD;
+import epicbot.commands.moderation.BotBan;
 import epicbot.commands.moderation.Kick;
 import epicbot.commands.moderation.Mute;
 import epicbot.commands.moderation.Unmute;
@@ -123,7 +123,7 @@ public class Epic
 					new Unmute(),
 					new Kick(),
 					new Ban(),
-					new BotBanCMD(),
+					new BotBan(),
 					// Music commands.
 					
 					// Owner commands.
