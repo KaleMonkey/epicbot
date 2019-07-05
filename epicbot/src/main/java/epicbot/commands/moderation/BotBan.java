@@ -11,9 +11,9 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 
-public class BotBanCMD extends Command
+public class BotBan extends Command
 {
-	public BotBanCMD()
+	public BotBan()
 	{
 		this.name = "botban";
 		this.help = "Bot bans the specified user.";

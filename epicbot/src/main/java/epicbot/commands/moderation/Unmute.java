@@ -5,7 +5,6 @@ import java.util.List;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-import epicbot.entities.BotBan;
 import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
