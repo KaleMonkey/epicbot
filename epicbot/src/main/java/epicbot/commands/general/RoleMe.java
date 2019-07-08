@@ -30,10 +30,6 @@ public class RoleMe extends Command
 		{
 			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
 		}
-		else if (event.getArgs().split(" ").length > 1)
-		{
-			event.reply("You provided too many arguments!" + Help.getHelp(this.name));
-		}
 		else
 		{
 			List<Role> roles = SettingsManager.getInstance().getSettings().getToggleableRoles(event.getGuild());
