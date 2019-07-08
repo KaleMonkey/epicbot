@@ -9,6 +9,7 @@ import epicbot.settings.SettingsManager;
 import epicbot.util.Rcon;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 
 /**
  * @author Kyle Minter (Kale Monkey)
@@ -26,7 +27,7 @@ public class Servers extends Command
 	
 	public void execute(CommandEvent event)
 	{
-		if (BotBan.isBotBanned(event.getMember()))
+		if (event.getChannelType() == ChannelType.TEXT && BotBan.isBotBanned(event.getMember()))
 		{
 			event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
 		}

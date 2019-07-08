@@ -10,6 +10,7 @@ import epicbot.entities.MutedMember;
 import epicbot.settings.SettingsManager;
 import epicbot.util.Logger;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
 
 /**
@@ -33,7 +34,7 @@ public class Mute extends Command
 	{
 		try
 		{
-			if (BotBan.isBotBanned(event.getMember()))
+			if (event.getChannelType() == ChannelType.TEXT && BotBan.isBotBanned(event.getMember()))
 			{
 				event.reply("You are bot banned on this server! You must be unbanned to use any of my commands.");
 			}
