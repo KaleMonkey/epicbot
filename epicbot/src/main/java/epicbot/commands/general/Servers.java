@@ -19,7 +19,7 @@ public class Servers extends Command
 	public Servers()
 	{
 		this.name = "servers";
-		this.help = "Gets a list of servers provided by Kale and shows if they are running or not.";
+		this.help = "Gets a list of servers decided by the bot owner, shows if they are online, and the player count.";
 		this.category = new Category("General");
 		this.guildOnly = false;
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
