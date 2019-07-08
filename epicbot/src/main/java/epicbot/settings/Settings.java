@@ -27,76 +27,136 @@ public class Settings
 	private String logChannelName;
 	private Server[] servers;
 	
+	/**
+	 * Sets the bot token.
+	 * @param token the bot token
+	 */
 	public void setBotToken(String token)
 	{
 		botToken = token;
 	}
 	
+	/**
+	 * Gets the bot token.
+	 * @return the bot token
+	 */
 	public String getBotToken()
 	{
 		return botToken;
 	}
 	
+	/**
+	 * Sets the owner id.
+	 * @param id the owner id
+	 */
 	public void setOwnerID(String id)
 	{
 		ownerID = id;
 	}
 	
+	/**
+	 * Gets the owner id.
+	 * @return the owner id
+	 */
 	public String getOwnerID()
 	{
 		return ownerID;
 	}
 	
+	/**
+	 * Sets the command prefix.
+	 * @param prefix the command prefix
+	 */
 	public void setCommandPrefix(String prefix)
 	{
 		commandPrefix = prefix;
 	}
 	
+	/**
+	 * Gets the command prefix.
+	 * @return the command prefix
+	 */
 	public String getCommandPrefix()
 	{
 		return commandPrefix;
 	}
 	
+	/**
+	 * Sets the oped role.
+	 * @param role the oped role
+	 */
 	public void setOpedRole(String role)
 	{
 		opedRole = role;
 	}
 	
+	/**
+	 * Gets the oped role.
+	 * @return the oped role
+	 */
 	public String getOpedRole()
 	{
 		return opedRole;
 	}
 	
+	/**
+	 * Sets the mute role.
+	 * @param role the mute role
+	 */
 	public void setMuteRole(String role)
 	{
 		muteRole = role;
 	}
 	
+	/**
+	 * Sets the bot ban role.
+	 * @param role the bot ban role
+	 */
 	public void setBotBanRole(String role)
 	{
 		botBanRole = role;
 	}
 	
+	/**
+	 * Sets the minigame role.
+	 * @param role the minigame role
+	 */
 	public void setMinigameRole(String role)
 	{
 		minigameRole = role;
 	}
 	
+	/**
+	 * Sets the toggleable roles.
+	 * @param roles the toggleable roles
+	 */
 	public void setToggleableRoles(String[] roles)
 	{
 		toggleableRoles = roles;
 	}
 	
+	/**
+	 * Sets the log channel name.
+	 * @param channelName the log channel name
+	 */
 	public void setLogChannelName(String channelName)
 	{
 		logChannelName = channelName;
 	}
 	
-	public void setServers(Server[] s)
+	/**
+	 * Sets the game servers.
+	 * @param servers the game servers
+	 */
+	public void setServers(Server[] servers)
 	{
-		servers = s;
+		this.servers = servers;
 	}
 	
+	/**
+	 * Gets the game servers
+	 * @return the game servers
+	 */
 	public Server[] getServers()
 	{
 		return servers;
