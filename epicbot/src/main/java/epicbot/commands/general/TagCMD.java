@@ -18,14 +18,14 @@ public class TagCMD extends Command
 	{
 		this.name = "tag";
 		this.aliases = new String[] {"t"};
-		this.help = "Sends a tag's content, creates a tag with a given name and content., deletes a tag with a given name, "
-				+ "renames a tag with a given name, sends a tag's details, or lists all known tags depending on argument [cmd].\n"
-				+ "If [cmd] is left empty a given tag's content will be sent.\nIf [cmd] equals \"add\" a tag will be created with a given name and content.\n"
-				+ "If [cmd] equals \"delete\" a given tag will be deleted.\n"
-				+ "If [cmd] equals \"rename\" a tag will be renamed with a given name.\n"
-				+ "If [cmd] equals \"details\" a given tag's details will be sent\n"
-				+ "If [cmd] equals \"all\" all known tags will be listed.";
-		this.arguments = "[cmd]";
+		this.help = "This command is used for getting, creating, deleting, renaming, listing, or getting a tag's details.\n"
+				+ "To get a tag's content do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag [tag name]`.\n"
+				+ "To create a tag do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag add [tag name] [tag content]`.\n"
+				+ "To delete a tag do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag delete [tag name]`.\n"
+				+ "To rename a tag do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag rename [tag name]`.\n"
+				+ "To list all tags do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag all`.\n"
+				+ "To get a tag's details do `" + SettingsManager.getInstance().getSettings().getCommandPrefix() + "tag details [tag name]`.";
+		this.arguments = "[sub command]";
 		this.category = new Category("General");
 		this.guildOnly = false;
 		this.botPermissions = new Permission[] {Permission.MESSAGE_WRITE};
