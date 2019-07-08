@@ -63,7 +63,7 @@ public class RoleMe extends Command
 				// Checks if the provided argument matches any of the toggle-able role names.
 				for (Role r : roles)
 				{
-					if (event.getArgs().split(" ")[0].equalsIgnoreCase(r.getName()))
+					if (event.getArgs().equalsIgnoreCase(r.getName()))
 					{
 						// If the argument matches a toggle-able role name the role object is saved.
 						role = r;
