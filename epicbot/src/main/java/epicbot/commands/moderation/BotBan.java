@@ -60,7 +60,7 @@ public class BotBan extends Command
 				if (isBotBanned(memberToBotBan))
 				{
 					// Removes the bot ban role.
-					event.getGuild().getController().addRolesToMember(memberToBotBan, SettingsManager.getInstance().getSettings().getBotBanRole(event.getGuild())).queue();
+					event.getGuild().getController().removeRolesFromMember(memberToBotBan, SettingsManager.getInstance().getSettings().getBotBanRole(event.getGuild())).queue();
 					
 					// Sends message confirming that the unbot ban worked.
 					event.reply(memberToBotBan.getUser().getName() + " is no longer bot banned!");
