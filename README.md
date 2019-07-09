@@ -30,9 +30,9 @@ A discord bot using JDA.
 
 	epicbot-0.0.4-SNAPSHOT
 		Overall:
-			-The bot no longer creates "Start.bat" and newer versions will be made into .exe's.
+			-The bot no longer creates "Start.bat" as newer versions will be made into .exe's.
 			-Now uses a cached thread pool for better performance.
-			-All references to "Epic Gamer Bot" have been changed to "Epic.
+			-All references to "Epic Gamer Bot" have been changed to "Epic".
 			-The bot no longer sends shitposts when mentioned.
 			-Commands now give specific error messages.
 			-Fixed the "Could not find "Tags.ser"" error on startup.
@@ -48,7 +48,7 @@ A discord bot using JDA.
 			-Users are now notified of the server a mute/unmute occured in instead of just a mute/unmute occuring.
 		Tags:
 			-Tags now store the date they were created, the author, and the amount of times they have been used.
-			-All tag related commands are now integrated into one command known as "Tag."
+			-All tag related commands are now integrated into one command known as "Tag".
 			-Only the tag author can delete a tag.
 			(These updates mean any tags created with the older version of the bot will not work)
 		Config:
