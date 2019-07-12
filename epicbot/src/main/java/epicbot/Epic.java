@@ -23,6 +23,7 @@ import epicbot.commands.moderation.BotBan;
 import epicbot.commands.moderation.Kick;
 import epicbot.commands.moderation.Mute;
 import epicbot.commands.moderation.Unmute;
+import epicbot.commands.owner.DeleteAllTags;
 import epicbot.commands.owner.Ping;
 import epicbot.commands.owner.ReloadConfig;
 import epicbot.commands.owner.Restart;
@@ -130,7 +131,8 @@ public class Epic
 					new Ping(),
 					new ReloadConfig(),
 					new Shutdown(),
-					new Restart());
+					new Restart(),
+					new DeleteAllTags());
 			
 			JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());
 			
