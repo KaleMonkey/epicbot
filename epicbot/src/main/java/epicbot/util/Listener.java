@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import epicbot.Epic;
+import epicbot.entities.Tag;
 import epicbot.settings.SettingsManager;
 import net.dv8tion.jda.core.audit.ActionType;
 import net.dv8tion.jda.core.audit.AuditLogEntry;
@@ -87,22 +88,12 @@ class RunnableThread implements Runnable
 			
 			try
 			{
-				// Checks if member leaving was due to a kick or ban.
-				List<AuditLogEntry> list = gmle.getGuild().getAuditLogs().cache(false).limit(1).submit().get(30, TimeUnit.SECONDS);
-				for (AuditLogEntry ale : list)
+				// Checks to see if the user is in any other servers that the bot is in.
+				long id = gmle.getUser().getIdLong();
+				if (Epic.getAPI().getUserById(id) == null)
 				{
-					if (!(ale.getType().equals(ActionType.KICK) || ale.getType().equals(ActionType.BAN)))
-					{
-						// If the member leave event is not cause by a kick then the leave message will be sent.
-						if (!(gmle.getUser().isBot()))
-						{
-							// Opens a private channel with the user and sends the leave message.
-							gmle.getUser().openPrivateChannel().queue((channel) ->
-							{
-								channel.sendMessage("Sad to see you leave the \"" + gmle.getGuild().getName() + "\" discord server!").queue();
-							});
-						}
-					}
+					// If the bot can no longer see the user then all of their tags will be deleted.
+					Tag.removeTagsById(id);
 				}
 			}
 			catch (Exception e)
@@ -140,10 +131,10 @@ class RunnableThread implements Runnable
 									// If the user getting muted is not a bot they will be sent a message telling them they got mmuted.
 									if (!(gmrae.getUser().isBot()))
 									{
-										gmrae.getUser().openPrivateChannel().queue((channel) ->
-										{
-											channel.sendMessage("You have been muted in the\" " + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
-										});
+										//gmrae.getUser().openPrivateChannel().queue((channel) ->
+										//{
+											//channel.sendMessage("You have been muted in the\" " + gmrae.getGuild().getName() + "\" discord server because \"*No reason provided*\".").queue();
+										//});
 									}
 									return;
 								}
