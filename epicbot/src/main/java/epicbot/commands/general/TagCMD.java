@@ -44,36 +44,31 @@ public class TagCMD extends Command
 		String[] args = event.getArgs().split(" ");
 		
 		// Finds out if a sub command is being called.
-		if (args[0].equalsIgnoreCase("add"))
+		switch (args[0])
 		{
-			// If the first argument equals "add" the create tag command will be called.
-			createTag(event);
-		}
-		else if (args[0].equalsIgnoreCase("delete"))
-		{
-			// If the first argument equals "delete" the delete tag command will be called.
-			deleteTag(event);
-		}
-		else if (args[0].equalsIgnoreCase("rename"))
-		{
-			// If the first argument equals "rename" the rename tag command will be called.
-			renameTag(event);
-			
-		}
-		else if (args[0].equalsIgnoreCase("details"))
-		{
-			// If the first argument equals "details" the get tag details command will be called.
-			getTagDetails(event);
-		}
-		else if (args[0].equalsIgnoreCase("all"))
-		{
-			// If the first argument equals "all" the get all tags command will be called.
-			getAllTags(event);
-		}
-		else
-		{
-			// If the first argument doesn't equal any of the sub commands the bot will default to the get tag command.
-			getTag(event);
+			case "add":
+				// If the first argument equals "add" the create tag command will be called.
+				createTag(event);
+				break;
+			case "delete":
+				// If the first argument equals "delete" the delete tag command will be called.
+				deleteTag(event);
+				break;
+			case "rename":
+				// If the first argument equals "rename" the rename tag command will be called.
+				renameTag(event);
+				break;
+			case "details":
+				// If the first argument equals "details" the get tag details command will be called.
+				getTagDetails(event);
+				break;
+			case "all":
+				// If the first argument equals "all" the get all tags command will be called.
+				getAllTags(event);
+				break;
+			default:
+				// If the first argument doesn't equal any of the sub commands the bot will default to the get tag command.
+				getTag(event);
 		}
 	}
 	
