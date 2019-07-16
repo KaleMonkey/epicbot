@@ -30,7 +30,7 @@ public class Logger
 		String t = "";
 		if (muteTime > 0)
 		{
-			t = " for " + muteTime + " minutes";
+			t = " for " + muteTime + " minute(s)";
 		}
 		else
 		{
@@ -54,20 +54,10 @@ public class Logger
 	public static void logMute(GuildMemberRoleAddEvent event, User mod, Member memberToMute, int muteTime, String muteReason)
 	{
 		// Logs the mute with the correct information.
-		String t = "";
-		if (muteTime > 0)
-		{
-			t = " for " + muteTime + " minutes";
-		}
-		else
-		{
-			t = " indefinatly";
-		}
-		
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.RED);
 		eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
-		eb.addField("Mute", mod.toString() + " muted " + memberToMute.getEffectiveName() + t + " because \"" + muteReason + ".\"", false);
+		eb.addField("Mute", mod.getName() + " muted " + memberToMute.getEffectiveName() + " indefinatly because \"" + muteReason + ".\"", false);
 		SettingsManager.getInstance().getSettings().getLogChannel(event.getGuild()).sendMessage(eb.build()).queue();
 	}
 	
@@ -79,6 +69,7 @@ public class Logger
 	 */
 	public static void logMuteExpiration(Guild guild, Member mutedMember, int time)
 	{
+		// Logs the mute expiration with the correct information.
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.GREEN);
 		eb.setAuthor("Epic", "https://github.com/KaleMonkey/epicbot");
