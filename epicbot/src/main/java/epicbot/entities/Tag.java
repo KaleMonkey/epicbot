@@ -167,6 +167,29 @@ public class Tag implements Serializable, Comparable<Tag>
 	}
 	
 	/**
+	 * Removes all tags with a given author id.
+	 * @param id the author id of the tags you want to remove
+	 */
+	public static void removeTagsById(long id)
+	{
+		for (int i = tags.size() - 1; i > -1; i--)
+		{
+			if (tags.get(i).getAuthorId() == id)
+			{
+				tags.remove(i);
+			}
+		}
+	}
+	
+	/**
+	 * Removes all tags from the tags list.
+	 */
+	public static void removeAllTags()
+	{
+		tags.clear();
+	}
+	
+	/**
 	 * Returns a tag from an array list of tags. 
 	 * @param tag the tag to return
 	 * @return a tag object if it is found, null if it isn't
